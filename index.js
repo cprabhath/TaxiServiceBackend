@@ -1,3 +1,10 @@
+// ----------------------------------------------------------------------------------//
+// This is the Server file that will run the server and connect to the database.     //
+// It will also handle the routes and the requests from the client.                  //
+//                              DO NOT MODIFY THIS FILE.                             //                                      
+// ----------------------------------------------------------------------------------//
+
+
 // ------------------- Import the required modules -------------------
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");

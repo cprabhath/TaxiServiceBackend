@@ -36,7 +36,7 @@ const removeOTP = (username) => {
                     username: username,
                 },
                 data: {
-                    Otp: null,
+                    otp: null,
                 },
             });
         } catch (err) {

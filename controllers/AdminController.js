@@ -4,78 +4,108 @@
 const jwt = require("jsonwebtoken");
 const adminServices = require("../services/AdminServices");
 const emailServices = require("../services/EmailService");
+const ResponseService = require("../services/ResponseService");
 //-----------------------------------------------------------------------//
+
+let emailCount = 0;
 
 // ------------------------------ Login ---------------------------------//
 const Login = async (req, res) => {
-  if (!req.body) {
-    return res.status(400).json({ message: "Please provide your username" });
-  }
-
   const { username, otp } = req.body;
 
-  // Checking if the username is provided
-  if (username === "") {
-    return res.status(400).json({ message: "Please provide your username" });
+  // Checking if the user exists
+  const existingUser = await adminServices.getAdminByUsername(username);
+
+  if (!existingUser) {
+    return ResponseService(
+      res,
+      "Error",
+      404,
+      "Seems like you are not registered yet!"
+    );
   }
 
-  try {
-    const existingUser = await adminServices.getAdminByUsername(username);
+  if (!existingUser.isEmailVerified) {
+    return ResponseService(
+      res,
+      "Error",
+      400,
+      "Seems like you haven't verified your email yet!"
+    );
+  }
 
-    if (!existingUser) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
+  // Checking if the user has exceeded the number of OTP requests
+  if (emailCount > 3) {
+    return ResponseService(
+      res,
+      "Error",
+      400,
+      "You have exceeded the number of OTP requests. Before trying again, Please check your email first!"
+    );
+  }
 
-    if (!existingUser.isEmailVerified) {
-      return res.status(401).json({ message: "Email is not verified" });
-    }
+  if (!otp) {
+    // Generate an OTP and save it to the user record
+    const generatedOtp = await adminServices.generateOTP();
 
-    if (!otp) {
-      // Generate an OTP and save it to the user record
-      const generatedOtp = await adminServices.generateOTP();
+    // Send OTP to user's email
+    const email = existingUser.email;
 
-      // Send OTP to user's email or phone (implementation required)
-      const email = existingUser.email;
-
-      emailServices
-        .sendEmail(res, email, "Verification", {
+    try {
+      const emailSent = await emailServices.sendEmail(
+        res,
+        email,
+        "Verification",
+        {
           heading: "One Time Password",
-          username: existingUser.username,
+          username: existingUser.username.toUpperCase(),
           token: generatedOtp,
-        })
-        .then(async (emailSent) => {
-          if (emailSent) {
-            await adminServices.updateAdminOtp(username, generatedOtp);
-            return res.status(200).json({ message: "OTP sent to your email" });
-          } else {
-            return res.status(500).json({ message: "ERROR " + err });
-          }
-        })
-        .catch((err) => {
-          return res.status(500).json({ message: "ERROR " + err });
-        });
-    } else {
-      // Check if the OTP is correct
-      if (otp !== existingUser.otp) {
-        return res.status(401).json({ message: "Invalid OTP" });
+        }
+      );
+
+      if (emailSent) {
+        emailCount = emailCount + 1;
+        await adminServices.updateAdminOtp(username, generatedOtp);
+        return ResponseService(
+          res,
+          "Send",
+          200,
+          "OTP has been sent to your email Address!"
+        );
+      } else {
+        return ResponseService(
+          res,
+          "Error",
+          400,
+          "Failed to send the OTP. Please try again!"
+        );
       }
-
-      // Generating the token
-      const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET, {
-        expiresIn: "1d",
-      });
-
-      // Removing the OTP after use
-      await adminServices.removeOTP(username);
-
-      // Returning the token
-      return res.status(200).json({ token });
+    } catch (err) {
+      return ResponseService(res, "Error", 500, "ERROR " + err.message);
     }
-  } catch (err) {
-    return res.status(500).json({ message: "ERROR " + err });
+  } else {
+    // Check if the OTP is correct
+    if (otp !== existingUser.otp) {
+      return ResponseService(
+        res,
+        "Error",
+        400,
+        "Seems like the OTP is incorrect"
+      );
+    }
+
+    // Generating the token
+    const token = jwt.sign({ id: existingUser.id }, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
+
+    // Removing the OTP after use
+    await adminServices.removeOTP(username);
+
+    // Returning the token
+    return ResponseService(res, "Success", 200, token);
   }
 };
-
 // ----------------------------------------------------------------------//
 
 // ------------------------------ Register ------------------------------//
