@@ -75,7 +75,7 @@ try {
   // ------------------- Connect to MySQL server -----------------------
   connection.connect((err) => {
     if (err) {
-      console.error("SQL ERROR: ", err.name);
+      console.error("SQL ERROR: ", err);
       console.error(
         "Please check the DATABASE_URL environment variable or Check if MySQL server is running."
       );
