@@ -3,7 +3,6 @@
 // ------------------Importing Packages---------------- //
 const express = require("express");
 const AdminController = require("../controllers/AdminController");
-const authGuard = require("../middleware/authGuard");
 const router = express.Router();
 // ---------------------------------------------------- //
 
@@ -12,7 +11,6 @@ router.post("/login", AdminController.Login);
 router.post("/register", AdminController.Register);
 // ---------------------------------------------------- //
 
-
-//------------------Export module----------------//
+//---------------------Export module------------------- //
 module.exports = router;
-//-----------------------------------------------//
+// ---------------------------------------------------- //
