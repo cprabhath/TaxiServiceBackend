@@ -4,14 +4,17 @@
 const express = require("express");
 const DriverController = require("../controllers/DriverController");
 const router = express.Router();
-// ----------------------------------------------------------------------- //
+// ----------------------------------------------------------------------- // 
 
 
 // ------------------- Routes for Driver ---------------- //
+router.post("/login", DriverController.DriverLogin);
 router.get("/login", DriverController.DriverLogin);
+router.post("/register", DriverController.DriverRegister);
 // ------------------------------------------------------ //
 
-
 //------------------Export module----------------//
+
 module.exports = router;
+
 //-----------------------------------------------//
