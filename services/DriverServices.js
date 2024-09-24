@@ -7,7 +7,8 @@ const db = require("../services/db");
 //-----------------------------------------------------------------------//
 
 // ------------------------------ Login ---------------------------------//
-const login = async (res, email) => {   
+const login = async (res, email) => { 
+      
     // Generate JWT token
     const token = jwt.sign({ userId: db.drivers.id, email: email }, process.env.JWT_SECRET, {
         expiresIn: "1h",

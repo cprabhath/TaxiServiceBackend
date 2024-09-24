@@ -7,7 +7,7 @@
 // ------------------- Import the required modules -------------------
 const express = require("express");
 const { PrismaClient } = require("@prisma/client");
-const mysql = require("mysql");
+const mysql = require("mysql2");
 const url = require("url");
 const querystring = require("querystring");
 const { exec } = require("child_process");
