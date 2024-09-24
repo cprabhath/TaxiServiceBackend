@@ -66,7 +66,6 @@ const Login = async (req, res) => {
 
       if (emailSent) {
         emailCount = emailCount + 1;
-        await smsServices.SMSService(generatedOtp);
         await adminServices.updateAdminOtp(username, generatedOtp);
         return ResponseService(
           res,

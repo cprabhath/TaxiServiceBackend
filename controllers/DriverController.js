@@ -49,7 +49,24 @@ const DriverRegister = (req, res) => {
     }
 }
 
+// ------------------------------ Update Driver Status ------------------------------//
+// this function is used to update the status of the driver like busy, available, etc.
+const UpdateDriverStatus = (req, res) => {
+    const { status } = req.body;
+    const { driverId } = req.params;
+
+    try {
+        DriverServices.updateDriverStatus(driverId, status);
+        return ResponseService(res, "Success", 200, "Driver status updated successfully!");
+    } catch (ex) {
+        console.error("Error updating driver status: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to update driver status");
+    }
+}
+// ----------------------------------------------------------------------//
+
 module.exports = {
     DriverLogin,
-    DriverRegister
+    DriverRegister,
+    UpdateDriverStatus
 }

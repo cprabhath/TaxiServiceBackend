@@ -83,6 +83,23 @@ const registerDriver = async (fullname, email, password, username, nic, phone, a
     }
 }
 
+// --------------------------- Update Driver Status ----------------------//
+const updateDriverStatus = async (driverId, status) => {
+    try {
+        await db.drivers.update({
+            where: {
+                id: driverId,
+            },
+            data: {
+                status: status,
+            },
+        });
+    } catch (err) {
+        console.error("Error updating driver status: ", err);
+    }
+}
+// ----------------------------------------------------------------------//
+
 
 // ---------------- Export the modules ------------------
 module.exports = {

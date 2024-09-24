@@ -34,6 +34,7 @@ model Customer {
   username String   @unique
   password String
   isEmailVerified Boolean
+  status String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -46,6 +47,7 @@ model PhoneOperator {
   nic String @unique
   password String
   isEmailVerified Boolean
+  status String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -60,6 +62,7 @@ model Drivers{
   address String
   password String
   isEmailVerified Boolean
+  status String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
