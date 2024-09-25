@@ -187,11 +187,13 @@ try {
   // ------------------------ Route Handlers ---------------------------
   const AdminRoute = require("./routes/AdminRoutes");
   const DriverRoute = require("./routes/DriverRoutes");
+  const PassengerRoute = require("./routes/PassengerRoutes");
   // -------------------------------------------------------------------
 
   // ----------------------- Handle the routes --------------------------
   app.use("/api/v1/admin", AdminRoute);
   app.use("/api/v1/driver", DriverRoute);
+  app.use("/api/v1/passenger", PassengerRoute);
   // --------------------------------------------------------------------
 } catch (e) {
   console.error("Error in routes: ", e.message);
