@@ -66,8 +66,31 @@ const UpdateDriverStatus = (req, res) => {
 }
 // ----------------------------------------------------------------------//
 
+
+
+
+// ----------------------------------new update ------------------------------------//
+
+
+//----------------------------------fetch driver profile---------------------------//
+
+// ---------------------------------- Fetch Driver Profile ---------------------------//
+// This function fetches the profile details of the driver
+const getDriverProfile = async (req, res) => {
+    const { driverId } = req.body;
+
+    try {
+        const driverProfile = await DriverServices.getDriverProfile(driverId);
+        return ResponseService(res, "Success", 200, driverProfile);
+    } catch (ex) {
+        console.error("Error fetching driver profile: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch driver profile");
+    }
+};
+
 module.exports = {
     DriverLogin,
     DriverRegister,
-    UpdateDriverStatus
+    UpdateDriverStatus,
+    getDriverProfile
 }

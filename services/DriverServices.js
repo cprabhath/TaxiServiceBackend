@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const db = require("../services/db");
 
+
 //-----------------------------------------------------------------------//
 
 // ------------------------------ Login ---------------------------------//
@@ -67,7 +68,7 @@ const registerDriver = async (fullname, email, password, username, nic, phone, a
         });
 
         // Generate JWT token
-        const token = jwt.sign({ userId: driver._id, email: driver.email }, process.env.SECRET_KEY, {
+        const token = jwt.sign({ userId: driver.id, email: driver.email }, process.env.SECRET_KEY, {
             expiresIn: "1h",
         });
 
@@ -102,11 +103,54 @@ const updateDriverStatus = async (driverId, status) => {
 // ----------------------------------------------------------------------//
 
 
+
+// ----------------------------------new update ------------------------------------//
+
+// Middleware to verify token and attach driver to req.user
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Get token from 'Bearer <token>'
+
+    if (!token) {
+        return res.status(401).json({ success: false, message: 'No token provided' });
+    }
+
+    // Verify the token
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ success: false, message: 'Invalid or expired token' });
+        }
+
+        req.driver = user; // Attach the decoded token (user info) to the request
+        next();
+    });
+};
+
+//-------------------------get driver profile details-------------------------//
+
+const getDriverProfile = async (driverId) => {
+    
+    try {
+        const driver = await db.drivers.findUnique({
+            where: {
+                id: parseInt(driverId),
+            },
+        });
+        return driver;
+    } catch (err) {
+        console.error("Error fetching driver profile: ", err);
+    }
+};
+
+
+
 // ---------------- Export the modules ------------------
 module.exports = {
     getUserByEmail,
     registerDriver,
-    login
+    login,
+    getDriverProfile,
+    authenticateToken
 };
 
 // ------------------------------------------------------
