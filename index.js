@@ -175,14 +175,18 @@ try {
   const AdminRoute = require("./routes/AdminRoutes");
   const DriverRoute = require("./routes/DriverRoutes");
   const PassengerRoute = require("./routes/PassengerRoutes");
+  const PhoneOperatorRoute = require("./routes/PhoneOperatorRoutes");
   // -------------------------------------------------------------------
 
   app.use("/api/v1/admin", AdminRoute);
   app.use("/api/v1/driver", DriverRoute);
   app.use("/api/v1/passenger", PassengerRoute);
+  app.use("/api/v1/phone-operator", PhoneOperatorRoute);
   // --------------------------------------------------------------------
   
 } catch (e) {
+  console.error("==================================================");
   console.error("Error in routes: ", e.message);
+  console.error("==================================================");
 }
 // -------------------------------------------------------------------
