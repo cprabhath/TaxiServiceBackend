@@ -20,6 +20,7 @@ model Admin {
   username String   @unique
   otp String?
   isEmailVerified Boolean
+  role String @default("admin")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -36,6 +37,7 @@ model Passenger {
   password String
   isEmailVerified Boolean @default(false)
   status String? @default("active")
+  role String @default("passenger")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -50,6 +52,7 @@ model PhoneOperator {
   phone String
   address String
   isEmailVerified Boolean @default(false)
+  role String @default("phone_operator")
   status String? @default("active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -66,6 +69,7 @@ model Drivers {
   password String
   isEmailVerified Boolean
   status String? @default("active")
+  role String @default("driver")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

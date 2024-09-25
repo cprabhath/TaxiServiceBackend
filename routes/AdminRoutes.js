@@ -3,6 +3,7 @@
 // ------------------Importing Packages---------------- //
 const express = require("express");
 const AdminController = require("../controllers/AdminController");
+const VerifyRole = require("../middleware/VerifyRole");
 const router = express.Router();
 // ---------------------------------------------------- //
 

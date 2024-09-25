@@ -8,19 +8,31 @@ const db = require("../services/db");
 //-----------------------------------------------------------------------//
 
 // ------------------------------ Login ---------------------------------//
-const login = async (res, email) => { 
+const login = async (email) => { 
       
+    // Check if the user exists
+    const existingUser = await getUserByEmail(email);
+
+    if (existingUser) {
+        throw new Error("User not found");
+    }
+
     // Generate JWT token
-    const token = jwt.sign({ userId: db.drivers.id, email: email }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ 
+        userId: existingUser.id,
+        email: existingUser.email,
+        role : existingUser.role
+
+     }, process.env.JWT_SECRET, {
         expiresIn: "1h",
     });
 
     return {
         token,
         user: {
-            id: db.drivers.id,
-            email: db.drivers.email,
-            name: db.drivers.fullName,
+            id: existingUser.id,
+            email: existingUser.email,
+            fullName: existingUser.fullName,
         },
     };
 
@@ -68,7 +80,7 @@ const registerDriver = async (fullname, email, password, username, nic, phone, a
         });
 
         // Generate JWT token
-        const token = jwt.sign({ userId: driver.id, email: driver.email }, process.env.SECRET_KEY, {
+        const token = jwt.sign({ userId: driver.id, email: email }, process.env.SECRET_KEY, {
             expiresIn: "1h",
         });
 
