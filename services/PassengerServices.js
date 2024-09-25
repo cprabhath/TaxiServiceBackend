@@ -28,7 +28,7 @@ const login = async (res, email) => {
 // ------------------------------ Get User By email ----------------------//
 const getUserByEmail = async (email) => {
     try {
-        const user = await db.passenger.findFirst({
+        const user = await db.passenger.findFirst({ // UPDATED
             where: {
                 email: email,
             },
@@ -40,7 +40,7 @@ const getUserByEmail = async (email) => {
 }
 
 //---------------------------Register a passenger---------------//
-
+// --------------------- UPDATED PARAMETERS ---------------------
 const registerPassenger = async (email, fullname, username, nic, phone, address, password) => {
     try {
         const existingUser = await getUserByEmail(email);
