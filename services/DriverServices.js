@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require('bcrypt');
 const db = require("../services/db");
 
+
 //-----------------------------------------------------------------------//
 
 // ------------------------------ Login ---------------------------------//
@@ -102,11 +103,51 @@ const updateDriverStatus = async (driverId, status) => {
 // ----------------------------------------------------------------------//
 
 
+
+// ----------------------------------new update ------------------------------------//
+
+// Middleware to verify token and attach driver to req.user
+const authenticateToken = (req, res, next) => {
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1]; // Get token from 'Bearer <token>'
+
+    if (!token) {
+        return res.status(401).json({ success: false, message: 'No token provided' });
+    }
+
+    // Verify the token
+    jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+        if (err) {
+            return res.status(403).json({ success: false, message: 'Invalid or expired token' });
+        }
+
+        req.driver = user; // Attach the decoded token (user info) to the request
+        next();
+    });
+};
+
+//-------------------------get driver profile details-------------------------//
+
+const getDriverProfile = async (driverId) => {
+    const query = 'SELECT name, email  FROM drivers WHERE id = ?';
+    const [rows] = await db.execute(query, [driverId]);
+
+    if (rows.length === 0) {
+        throw new Error('Driver not found');
+    }
+
+    return rows[0];
+};
+
+
+
 // ---------------- Export the modules ------------------
 module.exports = {
     getUserByEmail,
     registerDriver,
-    login
+    login,
+    getDriverProfile,
+    authenticateToken
 };
 
 // ------------------------------------------------------
