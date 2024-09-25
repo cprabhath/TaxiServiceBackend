@@ -1,0 +1,96 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  fullName String
+  username String   @unique
+  otp String?
+  isEmailVerified Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Customer {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  fullName String
+  nic String @unique
+  phone String
+  address String
+  username String   @unique
+  password String
+  isEmailVerified Boolean
+  status String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PhoneOperator {
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  fullName String
+  username String   @unique
+  nic String @unique
+  password String
+  isEmailVerified Boolean
+  status String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Drivers{
+  id      Int      @id @default(autoincrement())
+  email   String   @unique
+  fullName String
+  username String   @unique
+  nic String @unique
+  phone String
+  address String
+  password String
+  isEmailVerified Boolean
+  status String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Vehicle {
+  id      Int      @id @default(autoincrement())
+  vehicleNumber String @unique
+  vehicleType String
+  vehicleModel String
+  vehicleColor String
+  vehicleOwner String
+  isVehicleVerified Boolean
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model VehicleDriver {
+  id      Int      @id @default(autoincrement())
+  vehicleId Int
+  driverId Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Commision {
+  id      Int      @id @default(autoincrement())
+  driverId Int
+  commisionAmount Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
