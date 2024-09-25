@@ -10,16 +10,16 @@ const db = require("../services/db");
 const login = async (res, email) => { 
       
     // Generate JWT token
-    const token = jwt.sign({ userId: db.passengers.id, email: email }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ userId: db.passenger.id, email: email }, process.env.JWT_SECRET, {
         expiresIn: "1h",
     });
 
     return {
         token,
         user: {
-            id: db.passengers.id,
-            email: db.passengers.email,
-            name: db.passengers.fullName,
+            id: db.passenger.id,
+            email: db.passenger.email,
+            name: db.passenger.fullName,
         },
     };
 
@@ -28,7 +28,7 @@ const login = async (res, email) => {
 // ------------------------------ Get User By email ----------------------//
 const getUserByEmail = async (email) => {
     try {
-        const user = await db.passengers.findFirst({
+        const user = await db.passenger.findFirst({
             where: {
                 email: email,
             },
@@ -41,7 +41,7 @@ const getUserByEmail = async (email) => {
 
 //---------------------------Register a passenger---------------//
 
-const registerPassenger = async (fullname, email, password, username, nic, phone, address) => {
+const registerPassenger = async (email, fullname, username, nic, phone, address, password) => {
     try {
         const existingUser = await getUserByEmail(email);
 
@@ -53,7 +53,7 @@ const registerPassenger = async (fullname, email, password, username, nic, phone
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create a new passenger document
-        await db.passengers.create({
+        await db.passenger.create({
             data: {
                 email: email,
                 fullName: fullname,
@@ -71,14 +71,14 @@ const registerPassenger = async (fullname, email, password, username, nic, phone
             expiresIn: "1h",
         });
 
-        return ResponseService(res, 200, {
+        return {
             token,
             user: {
-                id: passenger._id,
+                id: passenger.id,
                 email: passenger.email,
                 fullName: passenger.fullName,
             },
-        });
+        };
     } catch (err) {
         console.error("Error registering passenger: ", err);
     }

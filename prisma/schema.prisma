@@ -34,8 +34,8 @@ model Passenger {
   phone String
   address String
   password String
-  isEmailVerified Boolean
-  status String
+  isEmailVerified Boolean @default(false)
+  status String? @default("active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -48,7 +48,7 @@ model PhoneOperator {
   nic String @unique
   password String
   isEmailVerified Boolean
-  status String
+  status String? @default("active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -63,7 +63,7 @@ model Drivers {
   address String
   password String
   isEmailVerified Boolean
-  status String?
+  status String? @default("active")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }

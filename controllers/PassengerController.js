@@ -42,8 +42,8 @@ const PassengerRegister = (req, res) => {
 
     // Create a new user
     try {
-        PassengerServices.registerPassenger(fullname, email, password, username, nic, phone, address);
-        return ResponseService(res, "Success", 201, "Passenger registered successfully!");
+        const passenger = PassengerServices.registerPassenger(email, fullname, username,  nic,  phone, address, password);
+        return ResponseService(res, "Success", 201, passenger);
     } catch (ex) {
         console.error("Error registering passenger: ", ex);
         return ResponseService(res, "Error", 500, "Failed to register passenger");
