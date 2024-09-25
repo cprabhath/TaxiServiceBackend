@@ -68,7 +68,7 @@ const registerDriver = async (fullname, email, password, username, nic, phone, a
         });
 
         // Generate JWT token
-        const token = jwt.sign({ userId: driver._id, email: driver.email }, process.env.SECRET_KEY, {
+        const token = jwt.sign({ userId: driver.id, email: driver.email }, process.env.SECRET_KEY, {
             expiresIn: "1h",
         });
 
@@ -129,10 +129,11 @@ const authenticateToken = (req, res, next) => {
 //-------------------------get driver profile details-------------------------//
 
 const getDriverProfile = async (driverId) => {
+    
     try {
-        const driver = await db.drivers.findFirst({
+        const driver = await db.drivers.findUnique({
             where: {
-                id: driverId,
+                id: parseInt(driverId),
             },
         });
         return driver;
