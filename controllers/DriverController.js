@@ -25,7 +25,7 @@ const DriverLogin = async (req, res) => {
         }
 
         // If login is successful, you might want to return a token or user details
-        const token = await DriverServices.login(res, email);  // Await if it's an async function
+        const token = await DriverServices.login(email);  // Await if it's an async function
         return ResponseService(res, "Success", 200, token);
 
     } catch (error) {
@@ -88,6 +88,22 @@ const getDriverProfile = async (req, res) => {
     }
 };
 
+//-----------------------------------Get Ride list--------------------------------//
+// This function fetches the list of rides assigned to the driver
+const getRideList = async (req, res) => {
+
+    try {
+        const rideList = await DriverServices.getRideList();
+        return ResponseService(res, "Success", 200, rideList);
+    } catch (ex) {
+        console.error("Error fetching Rides: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch Rides");
+    }
+}
+
+
+
+
 // ----------------------------------- Administrator functions -----------------------------------//
 
 // ----------------------------------- Get total count of drivers -----------------------------------//
@@ -107,4 +123,5 @@ module.exports = {
     UpdateDriverStatus,
     getDriverProfile,
     getTotalDriverCount,
+    getRideList
 }

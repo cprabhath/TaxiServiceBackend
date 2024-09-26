@@ -25,6 +25,25 @@ model Admin {
   updatedAt DateTime @updatedAt
 }
 
+model Rides {
+ id             Int      @id @default(autoincrement())
+  driverId       Int?
+  driver         Drivers?  @relation(fields: [driverId], references: [id])
+  vehicleId      Int?
+  vehicle        Vehicle? @relation(fields: [vehicleId], references: [id])
+  passengerId    Int
+  passenger      Passenger @relation(fields: [passengerId], references: [id])
+  pickupLocation String
+  dropLocation String
+  duration String
+  distance String
+  cost String
+  status String @default("pending")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+}
+
 // Renamed Customer to Passenger
 model Passenger {
   id      Int      @id @default(autoincrement())
@@ -40,6 +59,7 @@ model Passenger {
   role String @default("passenger")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  rides Rides[]
 }
 
 model PhoneOperator {
@@ -72,6 +92,7 @@ model Drivers {
   role String @default("driver")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  rides Rides[]
 }
 
 model Vehicle {
@@ -84,6 +105,7 @@ model Vehicle {
   isVehicleVerified Boolean
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  rides Rides[]
 }
 
 model VehicleDriver {
@@ -101,3 +123,4 @@ model Commision {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
+

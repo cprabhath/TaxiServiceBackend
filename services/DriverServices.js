@@ -8,22 +8,23 @@ const db = require("../services/db");
 //-----------------------------------------------------------------------//
 
 // ------------------------------ Login ---------------------------------//
-const login = async (email) => { 
-      
+const login = async (email) => {
+
     // Check if the user exists
     const existingUser = await getUserByEmail(email);
 
-    if (existingUser) {
+    if (!existingUser) {
         throw new Error("User not found");
     }
 
     // Generate JWT token
-    const token = jwt.sign({ 
+    const token = jwt.sign({
+
         userId: existingUser.id,
         email: existingUser.email,
-        role : existingUser.role
+        role: existingUser.role
 
-     }, process.env.JWT_SECRET, {
+    }, process.env.JWT_SECRET, {
         expiresIn: "1h",
     });
 
@@ -70,7 +71,7 @@ const updateDriverStatus = async (driverId, status) => {
 // ----------------------------------------------------------------------//
 
 //---------------------------Register a driver---------------//
-const registerDriver = async (fullname, email, password, username, nic, phone, address) => {
+const registerDriver = async (fullName, email, password, username, nic, phone, address) => {
     try {
         const existingUser = await getUserByEmail(email);
 
@@ -85,7 +86,7 @@ const registerDriver = async (fullname, email, password, username, nic, phone, a
         await db.drivers.create({
             data: {
                 email: email,
-                fullName: fullname,
+                fullName: fullName,
                 username: username,
                 nic: nic,
                 phone: phone,
@@ -138,7 +139,7 @@ const authenticateToken = (req, res, next) => {
 //-------------------------get driver profile details-------------------------//
 
 const getDriverProfile = async (driverId) => {
-    
+
     try {
         const driver = await db.drivers.findUnique({
             where: {
@@ -151,6 +152,41 @@ const getDriverProfile = async (driverId) => {
     }
 };
 
+
+//----------------------------------------get ride list----------------------------------//
+const getRideList = async () => {
+    try {
+        const list = await db.rides.findMany({
+            include: {
+                passenger: {
+                    select: {
+                        fullName: true,
+                        email: true,
+                    },
+                },
+                driver: {
+                    select: {
+                        fullName: true,
+                        phone: true,
+                    },
+                },
+                vehicle: {
+                    select: {
+                        vehicleType: true,
+                        vehicleModel: true,
+                        vehicleNumber: true,
+                    },
+                },
+            },
+        });
+        return list;
+
+    } catch (err) {
+        console.error("Error fetching rides: ", err);
+        return [];
+    }
+};
+// -------------------------------------------------------------------------------------------------
 
 // ------------------------------------------- Administrator functions -----------------------------------//
 const getTotalDriverCount = async () => {
@@ -171,7 +207,8 @@ module.exports = {
     getDriverProfile,
     authenticateToken,
     updateDriverStatus,
-    getTotalDriverCount
+    getTotalDriverCount,
+    getRideList
 };
 
 // ------------------------------------------------------
