@@ -50,9 +50,22 @@ const PassengerRegister = (req, res) => {
     }
 }
 
+// -------------------------------- Admin functions -------------------------------- //
+// ----------------------------- Get total passengers ----------------------------- //
+const getTotalPassengerCount = async (req, res) => {
+    try {
+        const totalPassengers = await PassengerServices.getTotalPassengerCount();
+        return ResponseService(res, "Success", 200, totalPassengers);
+    } catch (err) {
+        console.error("Error getting total passengers: ", err);
+        return ResponseService(res, "Error", 500, "Failed to get total passengers");
+    }
+}
+// --------------------------------------------------------------------------------- //
 
 
 module.exports = {
     PassengerLogin,
     PassengerRegister,
+    getTotalPassengerCount
 }

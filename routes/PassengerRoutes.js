@@ -13,6 +13,10 @@ router.post("/login", PassengerController.PassengerLogin);
 router.post("/register", PassengerController.PassengerRegister);
 // ------------------------------------------------------ //
 
+// ----------------------- Administrator functions ----------------------- //
+router.get("/totalPassengers", PassengerController.getTotalPassengerCount);
+// ----------------------------------------------------------------------- //
+
 //------------------Export module----------------//
 
 module.exports = router;

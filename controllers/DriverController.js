@@ -88,9 +88,23 @@ const getDriverProfile = async (req, res) => {
     }
 };
 
+// ----------------------------------- Administrator functions -----------------------------------//
+
+// ----------------------------------- Get total count of drivers -----------------------------------//
+const getTotalDriverCount = async (req, res) => {
+    try {
+        const totalDrivers = await DriverServices.getTotalDriverCount();
+        return ResponseService(res, "Success", 200, totalDrivers);
+    } catch (ex) {
+        console.error("Error fetching total driver count: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch total driver count");
+    }
+}
+
 module.exports = {
     DriverLogin,
     DriverRegister,
     UpdateDriverStatus,
-    getDriverProfile
+    getDriverProfile,
+    getTotalDriverCount,
 }

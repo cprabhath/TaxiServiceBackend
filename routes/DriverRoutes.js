@@ -13,6 +13,10 @@ router.post("/register", DriverController.DriverRegister);
 router.get("/profile", DriverController.getDriverProfile);
 // ------------------------------------------------------ //
 
+// ------------------- Administrator functions ---------------- //
+router.get("/totalDrivers", DriverController.getTotalDriverCount);
+// ------------------------------------------------------ //
+
 //------------------Export module----------------//
 module.exports = router;
 //-----------------------------------------------//

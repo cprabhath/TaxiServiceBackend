@@ -4,7 +4,6 @@
 const jwt = require("jsonwebtoken");
 const adminServices = require("../services/AdminServices");
 const emailServices = require("../services/EmailService");
-const smsServices = require("../services/SMSService");
 const ResponseService = require("../services/ResponseService");
 //-----------------------------------------------------------------------//
 
@@ -67,6 +66,7 @@ const Login = async (req, res) => {
       if (emailSent) {
         emailCount = emailCount + 1;
         await adminServices.updateAdminOtp(username, generatedOtp);
+
         return ResponseService(
           res,
           "Send",

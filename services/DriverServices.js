@@ -52,8 +52,24 @@ const getUserByEmail = async (email) => {
     }
 }
 
-//---------------------------Register a driver---------------//
+// --------------------------- Update Driver Status ----------------------//
+const updateDriverStatus = async (driverId, status) => {
+    try {
+        await db.drivers.update({
+            where: {
+                id: driverId,
+            },
+            data: {
+                status: status,
+            },
+        });
+    } catch (err) {
+        console.error("Error updating driver status: ", err);
+    }
+}
+// ----------------------------------------------------------------------//
 
+//---------------------------Register a driver---------------//
 const registerDriver = async (fullname, email, password, username, nic, phone, address) => {
     try {
         const existingUser = await getUserByEmail(email);
@@ -97,25 +113,6 @@ const registerDriver = async (fullname, email, password, username, nic, phone, a
     }
 }
 
-// --------------------------- Update Driver Status ----------------------//
-const updateDriverStatus = async (driverId, status) => {
-    try {
-        await db.drivers.update({
-            where: {
-                id: driverId,
-            },
-            data: {
-                status: status,
-            },
-        });
-    } catch (err) {
-        console.error("Error updating driver status: ", err);
-    }
-}
-// ----------------------------------------------------------------------//
-
-
-
 // ----------------------------------new update ------------------------------------//
 
 // Middleware to verify token and attach driver to req.user
@@ -155,6 +152,16 @@ const getDriverProfile = async (driverId) => {
 };
 
 
+// ------------------------------------------- Administrator functions -----------------------------------//
+const getTotalDriverCount = async () => {
+    try {
+        const totalDrivers = await db.drivers.count();
+        return totalDrivers;
+    } catch (err) {
+        console.error("Error fetching total driver count: ", err);
+    }
+}
+
 
 // ---------------- Export the modules ------------------
 module.exports = {
@@ -162,7 +169,9 @@ module.exports = {
     registerDriver,
     login,
     getDriverProfile,
-    authenticateToken
+    authenticateToken,
+    updateDriverStatus,
+    getTotalDriverCount
 };
 
 // ------------------------------------------------------

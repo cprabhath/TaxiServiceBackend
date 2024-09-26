@@ -96,14 +96,25 @@ const registerPassenger = async (email, fullname, username, nic, phone, address,
     }
 }
 
-
+// ---------------------------------- admin functions -------------------------------- //
+// ----------------------------- Get total passengers ----------------------------- //
+const getTotalPassengerCount = async () => {
+    try {
+        const totalPassengers = await db.passenger.count(); // UPDATED
+        return totalPassengers;
+    } catch (err) {
+        console.error("Error getting total passengers: ", err);
+    }
+}
+// --------------------------------------------------------------------------------- //
 
 
 // ---------------- Export the modules ------------------
 module.exports = {
     getUserByEmail,
     registerPassenger,
-    login
+    login,
+    getTotalPassengerCount
 };
 
 // ------------------------------------------------------
