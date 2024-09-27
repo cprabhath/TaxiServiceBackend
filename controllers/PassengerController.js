@@ -9,9 +9,11 @@ const PassengerLogin = async (req, res) => {
         const { email, password } = req.body;
 
         // Await the result of fetching the user by email
-        const existingUser = await DriverServices.getUserByEmail(email);
+        const existingUser = await PassengerServices.getUserByEmail(email);
 
-        // Check if the user exists
+        // Check if the user exists 00.
+
+    
         if (!existingUser) {
             return ResponseService(res, "Error", 404, "Seems like you are not registered yet!");
         }
@@ -25,7 +27,7 @@ const PassengerLogin = async (req, res) => {
         }
 
         // If login is successful, you might want to return a token or user details
-        const token = await DriverServices.login(res, email);  // Await if it's an async function
+        const token = await PassengerServices.login(res, email);  // Await if it's an async function
         return ResponseService(res, "Success", 200, token);
 
     } catch (error) {
