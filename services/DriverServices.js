@@ -58,7 +58,7 @@ const updateDriverStatus = async (driverId, status) => {
     try {
         await db.drivers.update({
             where: {
-                id: driverId,
+                id: parseInt(driverId, 10), // Ensure driverId is an integer
             },
             data: {
                 status: status,
@@ -66,8 +66,10 @@ const updateDriverStatus = async (driverId, status) => {
         });
     } catch (err) {
         console.error("Error updating driver status: ", err);
+        throw err; // Rethrow to catch in controller
     }
-}
+};
+
 // ----------------------------------------------------------------------//
 
 //---------------------------Register a driver---------------//
@@ -188,6 +190,33 @@ const getRideList = async () => {
 };
 // -------------------------------------------------------------------------------------------------
 
+
+//---------------------------------update ride status----------------------------------------------//
+const updateRideStatus = async (rideId, status) => {
+    try {
+        // Validate the ride ID and status
+        if (!rideId || !status) {
+            throw new Error("Ride ID and status are required");
+        }
+
+        const updatedRide = await db.rides.update({
+            where: {
+                id: rideId,
+            },
+            data: {
+                status: status,
+            },
+        });
+        return updatedRide;
+    } catch (err) {
+        console.error("Error updating ride status: ", err);
+        throw err; // Re-throw to be caught in the controller
+    }
+};
+
+
+//-----------------------------------------------------------------------------------------------//
+
 // ---------------------------------------------- Get total count ---------------------------------------//
 const getTotalCount = async (driverId) => {
     try {
@@ -203,6 +232,33 @@ const getTotalCount = async (driverId) => {
         console.error("Error fetching total count: ", ex);
     }
 }
+// -------------------------------------------------------------------------------------------------
+
+
+//  ------------------------------------------ Get total earnings by id ----------------------------
+const getTotalEarnings = async (driverId) => {
+    try {
+        const rides = await db.rides.findMany({
+            select: {
+                cost: true,
+            },
+            where: {
+                driverId: parseInt(driverId),
+                status: "pending",
+            }
+        });
+        const totalEarning = rides.reduce((total, ride) => {
+            const rideCost = parseFloat(ride.cost);
+            return total + (isNaN(rideCost) ? 0 : rideCost);
+        }, 0);
+
+        return totalEarning;
+    } catch (err) {
+        console.error("ERROR " + err.message);
+        return null;
+    }
+};
+// ------------------------------------------------------
 
 // ------------------------------------------- Administrator functions -----------------------------------//
 const getTotalDriverCount = async () => {
@@ -234,7 +290,9 @@ module.exports = {
     getTotalDriverCount,
     getRideList,
     getTotalCount,
-    getTotalVehicleCount
+    getTotalVehicleCount,
+    getTotalEarnings,
+    updateRideStatus
 };
 
 // ------------------------------------------------------

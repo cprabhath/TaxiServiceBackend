@@ -107,7 +107,9 @@ model Vehicle {
   vehicleModel      String
   vehicleColor      String
   vehicleOwner      String
+  ImagePath         String?
   isVehicleVerified Boolean
+  status            String?  @default("pending")
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
   deletedAt         DateTime?
