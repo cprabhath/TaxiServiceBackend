@@ -14,113 +14,110 @@ datasource db {
 }
 
 model Admin {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  fullName String
-  username String   @unique
-  otp String?
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  fullName        String
+  username        String   @unique
+  otp             String?
   isEmailVerified Boolean
-  role String @default("admin")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  role            String   @default("admin")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Rides {
- id             Int      @id @default(autoincrement())
+  id             Int       @id @default(autoincrement())
   driverId       Int?
   driver         Drivers?  @relation(fields: [driverId], references: [id])
   vehicleId      Int?
-  vehicle        Vehicle? @relation(fields: [vehicleId], references: [id])
+  vehicle        Vehicle?  @relation(fields: [vehicleId], references: [id])
   passengerId    Int
   passenger      Passenger @relation(fields: [passengerId], references: [id])
   pickupLocation String
-  dropLocation String
-  duration String
-  distance String
-  cost String
-  status String @default("pending")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-
+  dropLocation   String
+  duration       String
+  distance       String
+  cost           String
+  status         String    @default("pending")
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
 }
 
-// Renamed Customer to Passenger
 model Passenger {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  fullName String
-  username String   @unique
-  nic String @unique
-  phone String
-  address String
-  password String
-  isEmailVerified Boolean @default(false)
-  status String? @default("active")
-  role String @default("passenger")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  rides Rides[]
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  fullName        String
+  username        String   @unique
+  nic             String   @unique
+  phone           String
+  address         String
+  password        String
+  isEmailVerified Boolean  @default(false)
+  status          String?  @default("active")
+  role            String   @default("passenger")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  rides           Rides[]
 }
 
 model PhoneOperator {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  fullName String
-  username String   @unique
-  nic String @unique
-  password String
-  phone String
-  address String
-  isEmailVerified Boolean @default(false)
-  role String @default("phone_operator")
-  status String? @default("active")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  fullName        String
+  username        String   @unique
+  nic             String   @unique
+  password        String
+  phone           String
+  address         String
+  isEmailVerified Boolean  @default(false)
+  role            String   @default("phone_operator")
+  status          String?  @default("active")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
 
 model Drivers {
-  id      Int      @id @default(autoincrement())
-  email   String   @unique
-  fullName String
-  username String   @unique
-  nic String @unique
-  phone String
-  address String
-  password String
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  fullName        String
+  username        String   @unique
+  nic             String   @unique
+  phone           String
+  address         String
+  password        String
   isEmailVerified Boolean
-  status String? @default("active")
-  role String @default("driver")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  rides Rides[]
+  status          String?  @default("active")
+  role            String   @default("driver")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  rides           Rides[]
 }
 
 model Vehicle {
-  id      Int      @id @default(autoincrement())
-  vehicleNumber String @unique
-  vehicleType String
-  vehicleModel String
-  vehicleColor String
-  vehicleOwner String
+  id                Int      @id @default(autoincrement())
+  vehicleNumber     String   @unique
+  vehicleType       String
+  vehicleModel      String
+  vehicleColor      String
+  vehicleOwner      String
   isVehicleVerified Boolean
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  rides Rides[]
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  rides             Rides[]
 }
 
 model VehicleDriver {
-  id      Int      @id @default(autoincrement())
+  id        Int      @id @default(autoincrement())
   vehicleId Int
-  driverId Int
+  driverId  Int
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
 
 model Commision {
-  id      Int      @id @default(autoincrement())
-  driverId Int
+  id              Int      @id @default(autoincrement())
+  driverId        Int
   commisionAmount Float
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 }
-

@@ -100,7 +100,22 @@ const getRideList = async (req, res) => {
         return ResponseService(res, "Error", 500, "Failed to fetch Rides");
     }
 }
+// ------------------------------------------------------------------------------//
 
+// ---------------------------------- Get Rides count -----------------------------//
+// This function fetches the count of rides assigned to the driver
+const getTotalRidesCount = async (req, res) => {
+
+    const { driverId } = req.body
+
+    try{
+        const rideList = await DriverServices.getTotalCount(driverId);
+        return ResponseService(res, "Success", 200, rideList);
+    } catch (ex){
+        console.error("Error fetching rides count", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch count");
+    }
+}
 
 
 
@@ -123,5 +138,6 @@ module.exports = {
     UpdateDriverStatus,
     getDriverProfile,
     getTotalDriverCount,
-    getRideList
+    getRideList,
+    getTotalRidesCount
 }

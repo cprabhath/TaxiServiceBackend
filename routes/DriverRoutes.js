@@ -13,6 +13,7 @@ router.post("/register", DriverController.DriverRegister);
 router.post("/profile", DriverController.getDriverProfile);
 //router.put("/update-profile", DriverController.updateDriverProfile);
 router.get("/ride-details", DriverController.getRideList);
+router.post("/get-ride-count", DriverController.getTotalRidesCount);
 // ------------------------------------------------------ //
 
 // ------------------- Administrator functions ---------------- //

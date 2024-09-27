@@ -188,6 +188,22 @@ const getRideList = async () => {
 };
 // -------------------------------------------------------------------------------------------------
 
+// ---------------------------------------------- Get total count ---------------------------------------//
+const getTotalCount = async (driverId) => {
+    try {
+        const totalRides = await db.rides.count({
+            where: {
+                driverId: parseInt(driverId)
+            }
+        });
+
+        return totalRides;
+
+    } catch (ex) {
+        console.error("Error fetching total count: ", ex);
+    }
+}
+
 // ------------------------------------------- Administrator functions -----------------------------------//
 const getTotalDriverCount = async () => {
     try {
@@ -208,7 +224,8 @@ module.exports = {
     authenticateToken,
     updateDriverStatus,
     getTotalDriverCount,
-    getRideList
+    getRideList,
+    getTotalCount
 };
 
 // ------------------------------------------------------
