@@ -89,6 +89,71 @@ const updateAdminOtp = async (username, otp) => {
         console.error("ERROR " + err.message);
     }
 };
+// ------------------------------------------------------
+
+// ----------------- get Admin by ID --------------------
+const getAdminById = async (id) => {
+    try {
+        const admin = await db.admin.findUnique({
+            where: {
+                id: id,
+            },
+        });
+        return admin;
+    } catch (err) {
+        console.error("ERROR " + err.message);
+        return null;
+    }
+};
+// ------------------------------------------------------
+
+// ----------------- Update Admin Profile ----------------
+const updateAdminProfile = async (id, fullName, username, email) => {
+    try {
+        await db.admin.update({
+            where: {
+                id: id,
+            },
+            data: {
+                fullName: fullName,
+                username: username,
+                email: email,
+            },
+        });
+        return { message: "Profile updated successfully" };
+    } catch (err) {
+        console.error("ERROR " + err.message);
+        return { message: "ERROR " + err.message };
+    }
+};
+// ------------------------------------------------------
+
+// ----------------- Get Total Income -------------------
+const getTotalIncome = async () => {
+    try {
+        const rides = await db.rides.findMany({
+            select: {
+                cost: true,
+            },
+            where: {
+                status: "Pending",
+            }
+        });
+                const totalIncome = rides.reduce((total, ride) => {
+            const rideCost = parseFloat(ride.cost);
+            return total + (isNaN(rideCost) ? 0 : rideCost);
+        }, 0);
+        
+        return totalIncome;
+    } catch (err) {
+        console.error("ERROR " + err.message);
+        return null;
+    }
+};
+// ------------------------------------------------------
+
+// ------------------- get net income -------------------
+
 
 // ---------------- Export the modules ------------------
 module.exports = {
@@ -97,5 +162,8 @@ module.exports = {
     registerAdmin,
     generateOTP,
     removeOTP,
+    getAdminById,
+    updateAdminProfile,
+    getTotalIncome,
 };
 // ------------------------------------------------------

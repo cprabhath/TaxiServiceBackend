@@ -23,6 +23,7 @@ model Admin {
   role            String   @default("admin")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
 }
 
 model Rides {
@@ -38,9 +39,11 @@ model Rides {
   duration       String
   distance       String
   cost           String
+  platformCommission Float?
   status         String    @default("pending")
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+  deletedAt      DateTime?
 }
 
 model Passenger {
@@ -57,6 +60,7 @@ model Passenger {
   role            String   @default("passenger")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
   rides           Rides[]
 }
 
@@ -74,6 +78,7 @@ model PhoneOperator {
   status          String?  @default("active")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
 }
 
 model Drivers {
@@ -90,6 +95,7 @@ model Drivers {
   role            String   @default("driver")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  deletedAt       DateTime?
   rides           Rides[]
 }
 
@@ -103,21 +109,25 @@ model Vehicle {
   isVehicleVerified Boolean
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+  deletedAt         DateTime?
   rides             Rides[]
 }
 
-model VehicleDriver {
-  id        Int      @id @default(autoincrement())
-  vehicleId Int
-  driverId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model Rates {
+  id          Int      @id @default(autoincrement())
+  vehicleType String   @unique 
+  rate        String
+  status      String   @default("active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
 }
 
-model Commision {
-  id              Int      @id @default(autoincrement())
-  driverId        Int
-  commisionAmount Float
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+model PlatformRates {
+  id          Int      @id @default(autoincrement())
+  rate        Float    @default(0)
+  status      String   @default("active")
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  deletedAt   DateTime?
 }

@@ -4,7 +4,6 @@
 const express = require("express");
 const PassengerController = require("../controllers/PassengerController");
 const router = express.Router();
-
 // ----------------------------------------------------------------------- // 
 
 

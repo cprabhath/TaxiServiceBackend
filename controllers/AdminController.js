@@ -148,9 +148,81 @@ const Register = async (req, res) => {
 };
 // ----------------------------------------------------------------------//
 
+// ----------------------------- getAdminProfile -------------------------//
+const getAdminProfile = async (req, res) => {
+  const { id } = req.user;
+
+  try {
+    const admin = await adminServices.getAdminById(id);
+
+    if (!admin) {
+      return ResponseService(res, "Error", 404, "Admin not found");
+    }
+
+    return ResponseService(res, "Success", 200, admin);
+  } catch (err) {
+    return ResponseService(res, "Error", 500, "ERROR " + err.message);
+  }
+};
+// ----------------------------------------------------------------------//
+
+// ----------------------------- updateAdminProfile ----------------------//
+const updateAdminProfile = async (req, res) => {
+  const { id } = req.user;
+  const { fullName, username, email } = req.body;
+
+  try {
+    const admin = await adminServices.getAdminById(id);
+
+    if (!admin) {
+      return ResponseService(res, "Error", 404, "Admin not found");
+    }
+
+    await adminServices
+      .updateAdminProfile(id, fullName, username, email)
+      .then((response) => {
+        return ResponseService(res, "Success", 200, response.message);
+      })
+      .catch((err) => {
+        return ResponseService(res, "Error", 500, "ERROR " + err.message);
+      });
+  } catch (err) {
+    return ResponseService(res, "Error", 500, "ERROR " + err.message);
+  }
+};
+// ----------------------------------------------------------------------//
+
+// ---------------------------- get total income -------------------------//
+const getTotalIncome = async (req, res) => {
+  try {
+    const totalIncome = await adminServices.getTotalIncome();
+
+    return ResponseService(res, "Success", 200, totalIncome);
+  } catch (err) {
+    return ResponseService(res, "Error", 500, "ERROR " + err.message);
+  }
+};
+// ----------------------------------------------------------------------//
+
+// -------------------------------- get net income -----------------------//
+const getNetIncome = async (req, res) => {
+  try {
+    const netIncome = await adminServices.getNetIncome();
+
+    return ResponseService(res, "Success", 200, netIncome);
+  } catch (err) {
+    return ResponseService(res, "Error", 500, "ERROR " + err.message);
+  }
+};
+// ----------------------------------------------------------------------//
+
 // -------------------------- Exporting the module ----------------------//
 module.exports = {
   Login,
   Register,
+  getAdminProfile,
+  updateAdminProfile,
+  getTotalIncome,
+  getNetIncome,
 };
 // ----------------------------------------------------------------------//
