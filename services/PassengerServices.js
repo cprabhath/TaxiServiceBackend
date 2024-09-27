@@ -12,7 +12,7 @@ const login = async (res, email) => {
     // Check if the user exists
     const existingUser = await getUserByEmail(email);
 
-    if (existingUser) {
+    if (!existingUser) {
         throw new Error("User not found");
     }
 

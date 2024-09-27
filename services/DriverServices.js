@@ -214,6 +214,14 @@ const getTotalDriverCount = async () => {
     }
 }
 
+const getTotalVehicleCount = async () => {
+    try {
+        const totalVehicles = await db.vehicle.count();
+        return totalVehicles;
+    } catch (err) {
+        console.error("Error fetching total vehicle count: ", err);
+    }
+}
 
 // ---------------- Export the modules ------------------
 module.exports = {
@@ -225,7 +233,8 @@ module.exports = {
     updateDriverStatus,
     getTotalDriverCount,
     getRideList,
-    getTotalCount
+    getTotalCount,
+    getTotalVehicleCount
 };
 
 // ------------------------------------------------------

@@ -100,11 +100,17 @@ const Login = async (req, res) => {
       expiresIn: "1d",
     });
 
+    // send admin details
+
+
     // Removing the OTP after use
     await adminServices.removeOTP(username);
 
     // Returning the token
-    return ResponseService(res, "Success", 200, token);
+    return ResponseService(res, "Success", 200, {
+      token,
+      user: existingUser,
+    });
   }
 };
 // ----------------------------------------------------------------------//
@@ -116,10 +122,10 @@ const Register = async (req, res) => {
       .status(400)
       .json({ message: "Please provide required information" });
   }
-  const { fullName, username, email } = req.body;
+  const { fullName, profileImage ,username, email } = req.body;
 
   //Checking if the email and password are provided
-  if ((email === "", fullName === "", username === "")) {
+  if ((email === "", fullName === "", username === "", profileImage === "")) {
     return res
       .status(400)
       .json({ message: "Please provide required information" });
@@ -127,21 +133,22 @@ const Register = async (req, res) => {
 
   //Checking if the email exists in the database
   try {
-    const existingUser = await adminServices.getAdminByUsername(username);
+    //const existingUser = await adminServices.getAdminByUsername(username);
+    await adminServices
+    .registerAdmin(fullName, profileImage ,username, email)
+    .then((response) => {
+      return res.status(201).json({ message: response.message });
+    })
+    .catch((err) => {
+      return res.status(500).json({ message: "ERROR " + err.message });
+    });
 
-    if (!existingUser) {
-      //Creating the user
-      await adminServices
-        .registerAdmin(fullName, username, email)
-        .then((response) => {
-          return res.status(201).json({ message: response.message });
-        })
-        .catch((err) => {
-          return res.status(500).json({ message: "ERROR " + err.message });
-        });
-    } else {
-      return res.status(400).json({ message: "User already exists" });
-    }
+    // if (!existingUser) {
+    //   //Creating the user
+      
+    // } else {
+    //   return res.status(400).json({ message: "User already exists" });
+    // }
   } catch (err) {
     return res.status(500).json({ message: "ERROR " + err.message });
   }
@@ -150,7 +157,7 @@ const Register = async (req, res) => {
 
 // ----------------------------- getAdminProfile -------------------------//
 const getAdminProfile = async (req, res) => {
-  const { id } = req.user;
+  const { id } = req.body;
 
   try {
     const admin = await adminServices.getAdminById(id);
@@ -168,8 +175,8 @@ const getAdminProfile = async (req, res) => {
 
 // ----------------------------- updateAdminProfile ----------------------//
 const updateAdminProfile = async (req, res) => {
-  const { id } = req.user;
-  const { fullName, username, email } = req.body;
+  const { id } = req.body;
+  const { fullName, username, email, imageUrl } = req.body;
 
   try {
     const admin = await adminServices.getAdminById(id);
@@ -179,7 +186,7 @@ const updateAdminProfile = async (req, res) => {
     }
 
     await adminServices
-      .updateAdminProfile(id, fullName, username, email)
+      .updateAdminProfile(id, fullName, username, email, imageUrl)
       .then((response) => {
         return ResponseService(res, "Success", 200, response.message);
       })

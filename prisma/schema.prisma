@@ -17,6 +17,7 @@ model Admin {
   id              Int      @id @default(autoincrement())
   email           String   @unique
   fullName        String
+  profileImage    String   @default("null")
   username        String   @unique
   otp             String?
   isEmailVerified Boolean

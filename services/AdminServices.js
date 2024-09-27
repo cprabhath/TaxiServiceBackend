@@ -2,6 +2,7 @@
 
 // --------- Import the required modules ----------------
 const db = require("../services/db");
+const ImageServices = require("../services/ImageServices");
 // ------------------------------------------------------
 
 // ---------------- getAdminByUsername ------------------
@@ -47,26 +48,39 @@ const removeOTP = (username) => {
 // ------------------------------------------------------
 
 // ----------------- Register an Admin ------------------
-const registerAdmin = async (fullName, username, email) => {
+const registerAdmin = async (fullName, profileImage, username, email) => {
     try {
-        const existingUser = await getAdminByUsername(username);
 
-        if (!existingUser) {
-            // Generate OTP
-            const OTP = generateOTP();
-            await db.admin.create({
-                data: {
-                    fullName: fullName,
-                    username: username,
-                    isEmailVerified: false,
-                    email: email,
-                    otp: OTP,
-                },
-            });
-            return { message: "User created successfully " + "OTP is : " + OTP };
-        } else {
-            return { message: "User already exists" };
-        }
+        console.log("ADMIN USER", {
+            fullName: fullName,
+            profileImage: profileImage,
+            username: username,
+            email: email,
+        })
+
+        //const existingUser = await getAdminByUsername(username);
+
+        //const url = await ImageServices.uploadImage(profileImage, username, "Admin", "jpg");
+
+        //console.log("URL", url);
+
+        // if (!existingUser) {
+        //     // Generate OTP
+        //     const OTP = generateOTP();
+        //     await db.admin.create({
+        //         data: {
+        //             fullName: fullName,
+        //             profileImage: profileImage,
+        //             username: username,
+        //             isEmailVerified: false,
+        //             email: email,
+        //             otp: OTP,
+        //         },
+        //     });
+        //     return { message: "User created successfully " + "OTP is : " + OTP };
+        // } else {
+        //     return { message: "User already exists" };
+        // }
     } catch (err) {
         console.error("ERROR " + err.message);
         return { message: "ERROR " + err.message };
@@ -108,7 +122,7 @@ const getAdminById = async (id) => {
 // ------------------------------------------------------
 
 // ----------------- Update Admin Profile ----------------
-const updateAdminProfile = async (id, fullName, username, email) => {
+const updateAdminProfile = async (id, fullName, username, email, imageUrl) => {
     try {
         await db.admin.update({
             where: {
@@ -116,6 +130,7 @@ const updateAdminProfile = async (id, fullName, username, email) => {
             },
             data: {
                 fullName: fullName,
+                profileImage : imageUrl,
                 username: username,
                 email: email,
             },
@@ -153,6 +168,14 @@ const getTotalIncome = async () => {
 // ------------------------------------------------------
 
 // ------------------- get net income -------------------
+const getNetIncome = async () => {
+    try {
+       return "Not implemented";
+    } catch (err) {
+        console.error("ERROR " + err.message);
+        return null;
+    }
+}
 
 
 // ---------------- Export the modules ------------------
@@ -165,5 +188,6 @@ module.exports = {
     getAdminById,
     updateAdminProfile,
     getTotalIncome,
+    getNetIncome
 };
 // ------------------------------------------------------

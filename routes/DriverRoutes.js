@@ -17,7 +17,8 @@ router.post("/get-ride-count", DriverController.getTotalRidesCount);
 // ------------------------------------------------------ //
 
 // ------------------- Administrator functions ---------------- //
-router.get("/totalDrivers", DriverController.getTotalDriverCount);
+router.get("/total-drivers", DriverController.getTotalDriverCount);
+router.get("/total-vehicles", DriverController.getTotalVehicleCount);
 // ------------------------------------------------------ //
 
 //------------------Export module----------------//

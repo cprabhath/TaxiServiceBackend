@@ -131,6 +131,21 @@ const getTotalDriverCount = async (req, res) => {
         return ResponseService(res, "Error", 500, "Failed to fetch total driver count");
     }
 }
+// -------------------------------------------------------------------------------------------------//
+
+// ------------------------------------- get total vehicle count -----------------------------------//
+
+const getTotalVehicleCount = async (req, res) => {
+    try {
+        const totalVehicles = await DriverServices.getTotalVehicleCount();
+        return ResponseService(res, "Success", 200, totalVehicles);
+    } catch (ex) {
+        console.error("Error fetching total vehicle count: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch total vehicle count");
+    }
+}
+
+// -------------------------------------------------------------------------------------------------//
 
 module.exports = {
     DriverLogin,
@@ -139,5 +154,6 @@ module.exports = {
     getDriverProfile,
     getTotalDriverCount,
     getRideList,
-    getTotalRidesCount
+    getTotalRidesCount,
+    getTotalVehicleCount
 }
