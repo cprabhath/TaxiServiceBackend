@@ -10,7 +10,14 @@ const router = express.Router();
 // ------------------- Routes for Driver ---------------- //
 router.post("/login", DriverController.DriverLogin);
 router.post("/register", DriverController.DriverRegister);
-router.get("/profile", DriverController.getDriverProfile);
+router.post("/profile", DriverController.getDriverProfile);
+//router.put("/update-profile", DriverController.updateDriverProfile);
+router.get("/ride-details", DriverController.getRideList);
+router.post("/get-ride-count", DriverController.getTotalRidesCount);
+// ------------------------------------------------------ //
+
+// ------------------- Administrator functions ---------------- //
+router.get("/totalDrivers", DriverController.getTotalDriverCount);
 // ------------------------------------------------------ //
 
 //------------------Export module----------------//

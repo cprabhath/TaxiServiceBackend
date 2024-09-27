@@ -25,7 +25,7 @@ const DriverLogin = async (req, res) => {
         }
 
         // If login is successful, you might want to return a token or user details
-        const token = await DriverServices.login(res, email);  // Await if it's an async function
+        const token = await DriverServices.login(email);  // Await if it's an async function
         return ResponseService(res, "Success", 200, token);
 
     } catch (error) {
@@ -88,9 +88,56 @@ const getDriverProfile = async (req, res) => {
     }
 };
 
+//-----------------------------------Get Ride list--------------------------------//
+// This function fetches the list of rides assigned to the driver
+const getRideList = async (req, res) => {
+
+    try {
+        const rideList = await DriverServices.getRideList();
+        return ResponseService(res, "Success", 200, rideList);
+    } catch (ex) {
+        console.error("Error fetching Rides: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch Rides");
+    }
+}
+// ------------------------------------------------------------------------------//
+
+// ---------------------------------- Get Rides count -----------------------------//
+// This function fetches the count of rides assigned to the driver
+const getTotalRidesCount = async (req, res) => {
+
+    const { driverId } = req.body
+
+    try{
+        const rideList = await DriverServices.getTotalCount(driverId);
+        return ResponseService(res, "Success", 200, rideList);
+    } catch (ex){
+        console.error("Error fetching rides count", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch count");
+    }
+}
+
+
+
+// ----------------------------------- Administrator functions -----------------------------------//
+
+// ----------------------------------- Get total count of drivers -----------------------------------//
+const getTotalDriverCount = async (req, res) => {
+    try {
+        const totalDrivers = await DriverServices.getTotalDriverCount();
+        return ResponseService(res, "Success", 200, totalDrivers);
+    } catch (ex) {
+        console.error("Error fetching total driver count: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch total driver count");
+    }
+}
+
 module.exports = {
     DriverLogin,
     DriverRegister,
     UpdateDriverStatus,
-    getDriverProfile
+    getDriverProfile,
+    getTotalDriverCount,
+    getRideList,
+    getTotalRidesCount
 }

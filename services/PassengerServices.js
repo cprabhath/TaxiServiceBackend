@@ -9,17 +9,29 @@ const db = require("../services/db");
 // ------------------------------ Login ---------------------------------//
 const login = async (res, email) => { 
       
+    // Check if the user exists
+    const existingUser = await getUserByEmail(email);
+
+    if (existingUser) {
+        throw new Error("User not found");
+    }
+
     // Generate JWT token
-    const token = jwt.sign({ userId: db.passenger.id, email: email }, process.env.JWT_SECRET, {
+    const token = jwt.sign({ 
+        userId: existingUser.id,
+        email: existingUser.email,
+        role : existingUser.role
+
+     }, process.env.JWT_SECRET, {
         expiresIn: "1h",
     });
 
     return {
         token,
         user: {
-            id: db.passenger.id,
-            email: db.passenger.email,
-            name: db.passenger.fullName,
+            id: existingUser.id,
+            email: existingUser.email,
+            fullName: existingUser.fullName,
         },
     };
 
@@ -84,14 +96,25 @@ const registerPassenger = async (email, fullname, username, nic, phone, address,
     }
 }
 
-
+// ---------------------------------- admin functions -------------------------------- //
+// ----------------------------- Get total passengers ----------------------------- //
+const getTotalPassengerCount = async () => {
+    try {
+        const totalPassengers = await db.passenger.count(); // UPDATED
+        return totalPassengers;
+    } catch (err) {
+        console.error("Error getting total passengers: ", err);
+    }
+}
+// --------------------------------------------------------------------------------- //
 
 
 // ---------------- Export the modules ------------------
 module.exports = {
     getUserByEmail,
     registerPassenger,
-    login
+    login,
+    getTotalPassengerCount
 };
 
 // ------------------------------------------------------

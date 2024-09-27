@@ -8,19 +8,32 @@ const db = require("../services/db");
 //-----------------------------------------------------------------------//
 
 // ------------------------------ Login ---------------------------------//
-const login = async (res, email) => { 
-      
+const login = async (email) => {
+
+    // Check if the user exists
+    const existingUser = await getUserByEmail(email);
+
+    if (!existingUser) {
+        throw new Error("User not found");
+    }
+
     // Generate JWT token
-    const token = jwt.sign({ userId: db.drivers.id, email: email }, process.env.JWT_SECRET, {
+    const token = jwt.sign({
+
+        userId: existingUser.id,
+        email: existingUser.email,
+        role: existingUser.role
+
+    }, process.env.JWT_SECRET, {
         expiresIn: "1h",
     });
 
     return {
         token,
         user: {
-            id: db.drivers.id,
-            email: db.drivers.email,
-            name: db.drivers.fullName,
+            id: existingUser.id,
+            email: existingUser.email,
+            fullName: existingUser.fullName,
         },
     };
 
@@ -37,51 +50,6 @@ const getUserByEmail = async (email) => {
         return user;
     } catch (err) {
         console.error("Error fetching user: ", err);
-    }
-}
-
-//---------------------------Register a driver---------------//
-
-const registerDriver = async (fullname, email, password, username, nic, phone, address) => {
-    try {
-        const existingUser = await getUserByEmail(email);
-
-        if (existingUser) {
-            throw new Error("Driver already exists");
-        }
-
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
-        // Create a new driver document
-        await db.drivers.create({
-            data: {
-                email: email,
-                fullName: fullname,
-                username: username,
-                nic: nic,
-                phone: phone,
-                address: address,
-                password: hashedPassword,
-                isEmailVerified: false
-            }
-        });
-
-        // Generate JWT token
-        const token = jwt.sign({ userId: driver.id, email: driver.email }, process.env.SECRET_KEY, {
-            expiresIn: "1h",
-        });
-
-        return ResponseService(res, 200, {
-            token,
-            user: {
-                id: driver._id,
-                email: driver.email,
-                fullName: driver.fullName,
-            },
-        });
-    } catch (err) {
-        console.error("Error registering driver: ", err);
     }
 }
 
@@ -102,7 +70,49 @@ const updateDriverStatus = async (driverId, status) => {
 }
 // ----------------------------------------------------------------------//
 
+//---------------------------Register a driver---------------//
+const registerDriver = async (fullName, email, password, username, nic, phone, address) => {
+    try {
+        const existingUser = await getUserByEmail(email);
 
+        if (existingUser) {
+            throw new Error("Driver already exists");
+        }
+
+        // Hash the password
+        const hashedPassword = await bcrypt.hash(password, 10);
+
+        // Create a new driver document
+        await db.drivers.create({
+            data: {
+                email: email,
+                fullName: fullName,
+                username: username,
+                nic: nic,
+                phone: phone,
+                address: address,
+                password: hashedPassword,
+                isEmailVerified: false
+            }
+        });
+
+        // Generate JWT token
+        const token = jwt.sign({ userId: driver.id, email: email }, process.env.SECRET_KEY, {
+            expiresIn: "1h",
+        });
+
+        return ResponseService(res, 200, {
+            token,
+            user: {
+                id: driver._id,
+                email: driver.email,
+                fullName: driver.fullName,
+            },
+        });
+    } catch (err) {
+        console.error("Error registering driver: ", err);
+    }
+}
 
 // ----------------------------------new update ------------------------------------//
 
@@ -129,7 +139,7 @@ const authenticateToken = (req, res, next) => {
 //-------------------------get driver profile details-------------------------//
 
 const getDriverProfile = async (driverId) => {
-    
+
     try {
         const driver = await db.drivers.findUnique({
             where: {
@@ -143,6 +153,67 @@ const getDriverProfile = async (driverId) => {
 };
 
 
+//----------------------------------------get ride list----------------------------------//
+const getRideList = async () => {
+    try {
+        const list = await db.rides.findMany({
+            include: {
+                passenger: {
+                    select: {
+                        fullName: true,
+                        email: true,
+                    },
+                },
+                driver: {
+                    select: {
+                        fullName: true,
+                        phone: true,
+                    },
+                },
+                vehicle: {
+                    select: {
+                        vehicleType: true,
+                        vehicleModel: true,
+                        vehicleNumber: true,
+                    },
+                },
+            },
+        });
+        return list;
+
+    } catch (err) {
+        console.error("Error fetching rides: ", err);
+        return [];
+    }
+};
+// -------------------------------------------------------------------------------------------------
+
+// ---------------------------------------------- Get total count ---------------------------------------//
+const getTotalCount = async (driverId) => {
+    try {
+        const totalRides = await db.rides.count({
+            where: {
+                driverId: parseInt(driverId)
+            }
+        });
+
+        return totalRides;
+
+    } catch (ex) {
+        console.error("Error fetching total count: ", ex);
+    }
+}
+
+// ------------------------------------------- Administrator functions -----------------------------------//
+const getTotalDriverCount = async () => {
+    try {
+        const totalDrivers = await db.drivers.count();
+        return totalDrivers;
+    } catch (err) {
+        console.error("Error fetching total driver count: ", err);
+    }
+}
+
 
 // ---------------- Export the modules ------------------
 module.exports = {
@@ -150,7 +221,11 @@ module.exports = {
     registerDriver,
     login,
     getDriverProfile,
-    authenticateToken
+    authenticateToken,
+    updateDriverStatus,
+    getTotalDriverCount,
+    getRideList,
+    getTotalCount
 };
 
 // ------------------------------------------------------

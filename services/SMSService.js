@@ -3,7 +3,6 @@ const authToken = process.env.AUTHTOKEN;
 const twilioNumber = process.env.TWILIO_PHONE_NUMBER;
 const clientNumber = process.env.SMS_PHONE_NUMBER;
 const client = require("twilio")(accountSid, authToken);
-const ResponseService = require("../services/ResponseService");
 
 const SMSService = async  (message) => {
   await client.messages

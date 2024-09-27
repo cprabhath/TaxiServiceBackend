@@ -4,7 +4,6 @@
 const express = require("express");
 const PassengerController = require("../controllers/PassengerController");
 const router = express.Router();
-
 // ----------------------------------------------------------------------- // 
 
 
@@ -12,6 +11,10 @@ const router = express.Router();
 router.post("/login", PassengerController.PassengerLogin);
 router.post("/register", PassengerController.PassengerRegister);
 // ------------------------------------------------------ //
+
+// ----------------------- Administrator functions ----------------------- //
+router.get("/totalPassengers", PassengerController.getTotalPassengerCount);
+// ----------------------------------------------------------------------- //
 
 //------------------Export module----------------//
 
