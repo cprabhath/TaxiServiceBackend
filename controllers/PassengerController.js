@@ -1,7 +1,15 @@
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+const db = require("../services/db");
+const { sendPasswordEmail } = require("../services/EmailService");
 const ResponseService = require("../services/ResponseService");
 const PassengerServices = require("../services/PassengerServices");
-const bcrypt = require("bcrypt");
-const db = require("../services/db");
+const { log } = require("console");
+
+// Function to generate a random password if one is not provided
+const generatePassword = () => {
+  return crypto.randomBytes(6).toString("hex"); // Generates a 12-character random password
+};
 
 //----------------------------------Passenger Login--------------------------------//
 const PassengerLogin = async (req, res) => {
@@ -11,15 +19,9 @@ const PassengerLogin = async (req, res) => {
     // Await the result of fetching the user by email
     const existingUser = await PassengerServices.getUserByEmail(email);
 
-    // Check if the user exists 00.
-
+    // Check if the user exists
     if (!existingUser) {
-      return ResponseService(
-        res,
-        "Error",
-        404,
-        "Seems like you are not registered yet!"
-      );
+      return ResponseService(res, "Error", 404, "Seems like you are not registered yet!");
     }
 
     // Compare the password using bcrypt
@@ -30,39 +32,64 @@ const PassengerLogin = async (req, res) => {
       return ResponseService(res, "Error", 401, "Invalid email or password!");
     }
 
-    // If login is successful, you might want to return a token or user details
+    // If login is successful, generate a token or return user details
     const token = await PassengerServices.login(res, email); // Await if it's an async function
     return ResponseService(res, "Success", 200, token);
   } catch (error) {
-    console.log(error);
+    console.log("Error during login: ", error);
     return ResponseService(res, "Error", 500, "An error occurred during login");
   }
 };
 
 //----------------------------------Passenger Register--------------------------------//
-const PassengerRegister = (req, res) => {
-  // Checking if the user exists
+const PassengerRegister = async (req, res) => {
   const { fullname, email, password, username, nic, phone, address } = req.body;
 
-  // Create a new user
   try {
-    const passenger = PassengerServices.registerPassenger(
+
+    // If password is not provided, generate one
+    let plainPassword = password || generatePassword();
+
+    // Hash the password before saving it
+    const hashedPassword = await bcrypt.hash(plainPassword, 10); // 10 is the salt rounds
+
+    // Register passenger with hashed password
+    const passenger = await PassengerServices.registerPassenger(
       email,
       fullname,
       username,
       nic,
       phone,
       address,
-      password
+      hashedPassword
     );
+
+    // Prepare email data
+    const emailData = {
+      fullName: fullname,
+      email: email,
+      password: plainPassword, // Send plain password in the email
+    };
+
+    console.log("Passenger registration details:", fullname, email, plainPassword);
+
+    // Send welcome email to the user with the plain password
+    const emailSent = await sendPasswordEmail(email, 'Your Account Details', emailData);
+
+    if (!emailSent) {
+      return ResponseService(res, "Error", 500, "Failed to send registration email");
+    }
+
+    // Respond with the registered passenger data (but not the plain password)
     return ResponseService(res, "Success", 201, passenger);
   } catch (ex) {
-    console.error("Error registering passenger: ", ex);
+    console.error("Error registering passenger:", ex);
     return ResponseService(res, "Error", 500, "Failed to register passenger");
   }
 };
 
 // -------------------------------- Admin functions -------------------------------- //
+
 // ----------------------------- Get total passengers ----------------------------- //
 const getTotalPassengerCount = async (req, res) => {
   try {
@@ -73,14 +100,13 @@ const getTotalPassengerCount = async (req, res) => {
     return ResponseService(res, "Error", 500, "Failed to get total passengers");
   }
 };
-// --------------------------------------------------------------------------------- //
 
-// ------------------------------- get total passengers ----------------------------- //
+// ------------------------------- Get total passengers ---------------------------- //
 const getTotalPassenger = async (req, res) => {
   try {
     const totalPassengers = await db.passenger.findMany({
-      where:{
-        deletedAt: null
+      where: {
+        deletedAt: null,
       },
       select: {
         id: true,
@@ -97,15 +123,13 @@ const getTotalPassenger = async (req, res) => {
       },
     });
     return ResponseService(res, "Success", 200, totalPassengers);
-
   } catch (err) {
     console.error("Error getting total passengers: ", err);
     return ResponseService(res, "Error", 500, "Failed to get total passengers");
   }
 };
-// --------------------------------------------------------------------------------- //
 
-// ------------------------------- Update Passenger Status ----------------------------- //
+// ------------------------------- Update Passenger Status ------------------------- //
 const updatePassengerStatus = async (req, res) => {
   try {
     const userID = req.params.id;
@@ -124,9 +148,8 @@ const updatePassengerStatus = async (req, res) => {
     return ResponseService(res, "Error", 500, "Failed to update passenger status");
   }
 };
-// --------------------------------------------------------------------------------- //
 
-// ------------------------------- Delete Passenger ----------------------------- //  
+// ------------------------------- Delete Passenger -------------------------------- //
 const deletePassenger = async (req, res) => {
   try {
     const userID = req.params.id;
@@ -144,7 +167,6 @@ const deletePassenger = async (req, res) => {
     return ResponseService(res, "Error", 500, "Failed to delete passenger");
   }
 };
-// --------------------------------------------------------------------------------- //
 
 // ------------------------------- Get Passenger By ID ----------------------------- //
 const getPassengerById = async (req, res) => {
@@ -153,11 +175,11 @@ const getPassengerById = async (req, res) => {
     const passenger = await db.passenger.findUnique({
       where: {
         id: parseInt(userID),
-        deletedAt: null
+        deletedAt: null,
       },
-      include:{
+      include: {
         operator: true,
-      }
+      },
     });
     return ResponseService(res, "Success", 200, passenger);
   } catch (err) {
@@ -165,11 +187,8 @@ const getPassengerById = async (req, res) => {
     return ResponseService(res, "Error", 500, "Failed to get passenger");
   }
 };
-// --------------------------------------------------------------------------------- //
 
-
-//---------------------------Book a Ride---------------//
-// Book Ride Function
+//---------------------------Book a Ride----------------------------------//
 const bookRide = async (req, res) => {
   try {
     const bookingData = req.body;
@@ -178,20 +197,16 @@ const bookRide = async (req, res) => {
     const result = await PassengerServices.bookRide(bookingData);
 
     if (result.success) {
-      return res
-        .status(200)
-        .json({
-          message: "Ride booked successfully!",
-          bookingId: result.bookingId,
-        });
+      return ResponseService(res, "Success", 200, {
+        message: "Ride booked successfully!",
+        bookingId: result.bookingId,
+      });
     } else {
-      return res
-        .status(500)
-        .json({ message: "Error booking the ride.", error: result.error });
+      return ResponseService(res, "Error", 500, "Error booking the ride.");
     }
   } catch (error) {
     console.error("Error occurred during ride booking:", error);
-    return res.status(500).json({ message: "An unexpected error occurred." });
+    return ResponseService(res, "Error", 500, "An unexpected error occurred.");
   }
 };
 
