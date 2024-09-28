@@ -111,16 +111,15 @@ const getTotalPassengerCount = async () => {
 //---------------------------Book a Ride---------------//
 const bookRide = async (bookingData) => {
     try {
-        // Save the ride details to the database
-        await db.ride.create({
+        await db.rides.create({
             data: {
+                passengerId: parseInt(bookingData.passengerId),
                 pickupLocation: bookingData.currentPlaceName,
-                dropoffLocation: bookingData.destination,
+                dropLocation: bookingData.destination,
                 distance: bookingData.distance,
                 duration: bookingData.duration,
                 cost: bookingData.cost,
-                vehicleType: bookingData.vehicleType,
-                
+                vehicleId: parseInt(bookingData.vehicleId),
             },
         });
         return { success: true, message: "Ride booked successfully." };
