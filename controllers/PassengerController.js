@@ -64,10 +64,34 @@ const getTotalPassengerCount = async (req, res) => {
     }
 }
 // --------------------------------------------------------------------------------- //
+//---------------------------Book a Ride---------------//
+const express = require('express');
+const router = express.Router();
+const { bookRide } = require('./PassengerServices');
+
+// Book Ride Function
+const bookRide = async (req, res) => {
+    try {
+        const bookingData = req.body;
+
+        // Call the service to book the ride
+        const result = await PassengerServices.bookRide(bookingData);
+
+        if (result.success) {
+            return res.status(200).json({ message: "Ride booked successfully!", bookingId: result.bookingId });
+        } else {
+            return res.status(500).json({ message: "Error booking the ride.", error: result.error });
+        }
+    } catch (error) {
+        console.error("Error occurred during ride booking:", error);
+        return res.status(500).json({ message: "An unexpected error occurred." });
+    }
+};
 
 
 module.exports = {
     PassengerLogin,
     PassengerRegister,
-    getTotalPassengerCount
+    getTotalPassengerCount,
+    bookRide
 }

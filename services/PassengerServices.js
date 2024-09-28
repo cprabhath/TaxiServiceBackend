@@ -108,12 +108,37 @@ const getTotalPassengerCount = async () => {
 }
 // --------------------------------------------------------------------------------- //
 
+//---------------------------Book a Ride---------------//
+const bookRide = async (bookingData) => {
+    try {
+        // Save the ride details to the database
+        await db.ride.create({
+            data: {
+                pickupLocation: bookingData.currentPlaceName,
+                dropoffLocation: bookingData.destination,
+                distance: bookingData.distance,
+                duration: bookingData.duration,
+                cost: bookingData.cost,
+                vehicleType: bookingData.vehicleType,
+                
+            },
+        });
+        return { success: true, message: "Ride booked successfully." };
+    } catch (error) {
+        console.error("Error booking the ride:", error);
+        return { success: false, message: "Failed to book the ride." };
+    }
+};
+
+
+
 
 // ---------------- Export the modules ------------------
 module.exports = {
     getUserByEmail,
     registerPassenger,
     login,
+    bookRide,
     getTotalPassengerCount
 };
 
