@@ -55,8 +55,8 @@ model Passenger {
   nic                String    @unique
   phone              String
   address            String
-  password           String
-  isEmailVerified    Boolean   @default(false)
+  password           String?
+  isEmailVerified    Boolean?   @default(false)
   status             String?   @default("active")
   isTemporary        Boolean   @default(false)
   role               String    @default("passenger")
