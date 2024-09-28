@@ -133,22 +133,21 @@ const Register = async (req, res) => {
 
   //Checking if the email exists in the database
   try {
-    //const existingUser = await adminServices.getAdminByUsername(username);
-    await adminServices
-    .registerAdmin(fullName, profileImage ,username, email)
-    .then((response) => {
-      return res.status(201).json({ message: response.message });
-    })
-    .catch((err) => {
-      return res.status(500).json({ message: "ERROR " + err.message });
-    });
+    const existingUser = await adminServices.getAdminByUsername(username);
 
-    // if (!existingUser) {
-    //   //Creating the user
-      
-    // } else {
-    //   return res.status(400).json({ message: "User already exists" });
-    // }
+    if (!existingUser) {
+      //Creating the user
+      await adminServices
+        .registerAdmin(fullName, profileImage ,username, email)
+        .then((response) => {
+          return res.status(201).json({ message: response.message });
+        })
+        .catch((err) => {
+          return res.status(500).json({ message: "ERROR " + err.message });
+        });
+    } else {
+      return res.status(400).json({ message: "User already exists" });
+    }
   } catch (err) {
     return res.status(500).json({ message: "ERROR " + err.message });
   }

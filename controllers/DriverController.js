@@ -51,19 +51,24 @@ const DriverRegister = (req, res) => {
 }
 
 // ------------------------------ Update Driver Status ------------------------------//
-// this function is used to update the status of the driver like busy, available, etc.
-const UpdateDriverStatus = (req, res) => {
-    const { status } = req.body;
+// this function is used to update the status of the driver like busy, available
+const updateDriverStatus = async (req, res) => {
     const { driverId } = req.params;
+    const { status } = req.body; // Expecting the status to be in the request body
+
+    if (!driverId || !status) {
+        return res.status(400).json({ message: "Driver ID and status are required." });
+    }
 
     try {
-        DriverServices.updateDriverStatus(driverId, status);
-        return ResponseService(res, "Success", 200, "Driver status updated successfully!");
-    } catch (ex) {
-        console.error("Error updating driver status: ", ex);
-        return ResponseService(res, "Error", 500, "Failed to update driver status");
+        await DriverServices.updateDriverStatus(driverId, status);
+        return res.status(200).json({ message: "Driver status updated successfully!" });
+    } catch (error) {
+        console.error("Error updating driver status: ", error);
+        return res.status(500).json({ message: "Failed to update driver status" });
     }
-}
+};
+
 // ----------------------------------------------------------------------//
 
 
@@ -102,6 +107,42 @@ const getRideList = async (req, res) => {
 }
 // ------------------------------------------------------------------------------//
 
+//--------------------------------update ride status----------------------------//
+const updateRideStatus = async (req, res) => {
+    const { rideId } = req.params;
+    const { status } = req.body;
+
+    console.log(`Received request to update ride ID: ${rideId} to status: ${status}`);
+
+    try {
+        if (!rideId || !status) {
+            return ResponseService(res, "Ride ID and status are required", 400);
+        }
+
+        // Parse rideId to an integer
+        const rideIdInt = parseInt(rideId, 10);
+        if (isNaN(rideIdInt)) {
+            return ResponseService(res, "Invalid Ride ID", 400);
+        }
+
+        const updatedRide = await DriverServices.updateRideStatus(rideIdInt, status);
+        
+        if (updatedRide) {
+            return ResponseService(res, "Success", 200, updatedRide);
+        } else {
+            console.log(`No ride found with ID: ${rideIdInt}`);
+            return ResponseService(res, "Failed to update ride status", 400);
+        }
+    } catch (ex) {
+        console.error("Error updating ride status: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to update ride status");
+    }
+};
+
+
+
+//-------------------------------------------------------------------------------------//
+
 // ---------------------------------- Get Rides count -----------------------------//
 // This function fetches the count of rides assigned to the driver
 const getTotalRidesCount = async (req, res) => {
@@ -116,6 +157,19 @@ const getTotalRidesCount = async (req, res) => {
         return ResponseService(res, "Error", 500, "Failed to fetch count");
     }
 }
+
+// ---------------------------- get total earnings -------------------------//
+
+const getTotalEarnings = async (req, res) => {
+    try {
+      const totalEarning = await DriverServices.getTotalEarnings();
+  
+      return ResponseService(res, "Success", 200, totalEarning);
+    } catch (err) {
+      return ResponseService(res, "Error", 500, "ERROR " + err.message);
+    }
+  };
+  // ----------------------------------------------------------------------//
 
 
 
@@ -150,10 +204,12 @@ const getTotalVehicleCount = async (req, res) => {
 module.exports = {
     DriverLogin,
     DriverRegister,
-    UpdateDriverStatus,
+    updateDriverStatus,
     getDriverProfile,
     getTotalDriverCount,
     getRideList,
     getTotalRidesCount,
-    getTotalVehicleCount
+    getTotalVehicleCount,
+    getTotalEarnings,
+    updateRideStatus
 }
