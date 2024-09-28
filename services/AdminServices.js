@@ -2,6 +2,7 @@
 
 // --------- Import the required modules ----------------
 const db = require("../services/db");
+const emailServices = require("./EmailService");
 // ------------------------------------------------------
 
 // ---------------- getAdminByUsername ------------------
@@ -175,6 +176,6 @@ module.exports = {
     getAdminById,
     updateAdminProfile,
     getTotalIncome,
-    getNetIncome
+    getNetIncome,
 };
 // ------------------------------------------------------

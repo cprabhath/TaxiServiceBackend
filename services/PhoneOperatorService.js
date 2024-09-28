@@ -7,6 +7,7 @@ const getPhoneOperatorByUsername = async (username) => {
     const user = await db.phoneOperator.findFirst({
       where: {
         username: username,
+        status: "active",
       },
     });
     return user;

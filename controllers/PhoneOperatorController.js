@@ -88,8 +88,118 @@ const Register = async (req, res) => {
 };
 //-----------------------------------------------------------------------//
 
+// -------------------------------- admin functions --------------------------------//
+// ------------------------------ getPhoneOperatorProfile ------------------------------//
+const getPhoneOperatorProfile = async (req, res) => {
+  const userId = req.params.id;
+
+  const phoneOperator = await db.phoneOperator.findUnique({
+    where: {
+      id: parseInt(userId),
+    },
+    select: {
+      id: true,
+      email: true,
+      fullName: true,
+      username: true,
+      nic: true,
+      phone: true,
+      address: true,
+    },
+  })
+
+  return ResponseService(res, "Success", 200, phoneOperator);
+};
+// -------------------------------------------------------------------------------------//
+
+// ------------------------------ updatePhoneOperatorProfile ------------------------------//
+const updatePhoneOperatorProfile = async (req, res) => {
+  const userId = req.params.id;
+
+  const { email, fullName, nic, phone, address } = req.body;
+
+  await db.phoneOperator.update({
+    where: {
+      id: parseInt(userId),
+    },
+    data: {
+      email: email,
+      fullName: fullName,
+      nic: nic,
+      phone: phone,
+      address: address,
+    },
+  });
+
+  return ResponseService(res, "Success", 200, "Profile updated successfully!");
+};
+// -----------------------------------------------------------------------//
+
+// ------------------------------ getAllPhoneOperators ------------------------------//
+const getAllPhoneOperators = async (req, res) => {
+  const phoneOperators = await db.phoneOperator.findMany({
+    where: {
+      deletedAt: null,
+    }
+  });
+  return ResponseService(res, "Success", 200, phoneOperators);
+};
+// -----------------------------------------------------------------------//
+
+// ------------------------------ updateOperatorStatus ------------------------------//
+const updateOperatorStatus = async (req, res) => {
+  const userId = req.params.id;
+  const { status } = req.body;
+
+  await db.phoneOperator.update({
+    where: {
+      id: parseInt(userId),
+    },
+    data: {
+      status: status,
+    },
+  });
+
+  return ResponseService(res, "Success", 200, "Operator status updated successfully!");
+};
+// -----------------------------------------------------------------------//
+
+// ------------------------------ deletePhoneOperator ------------------------------//
+const deletePhoneOperator = async (req, res) => {
+  const userId = req.params.id;
+
+  await db.phoneOperator.update({
+    where: {
+      id: parseInt(userId),
+    },
+    data:{
+      deletedAt: new Date(),
+    }
+  });
+
+  return ResponseService(res, "Success", 200, "Operator deleted successfully!");
+};
+// -----------------------------------------------------------------------//
+
+// ------------------------------ getAllUsernames ------------------------------//
+const getAllUsernames = async (req, res) => {
+  const usernames = await db.phoneOperator.findMany({
+    select: {
+      username: true,
+    }
+  });
+
+  return ResponseService(res, "Success", 200, usernames);
+};
+// -----------------------------------------------------------------------//
 // ------------------------------ Exporting the functions ------------------------------//
 module.exports = {
   Login,
   Register,
+  getPhoneOperatorProfile,
+  updatePhoneOperatorProfile,
+  getAllPhoneOperators,
+  updateOperatorStatus,
+  deletePhoneOperator,
+  getAllUsernames,
 };
