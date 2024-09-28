@@ -48,21 +48,25 @@ model Rides {
 }
 
 model Passenger {
-  id              Int      @id @default(autoincrement())
-  email           String   @unique
-  fullName        String
-  username        String   @unique
-  nic             String   @unique
-  phone           String
-  address         String
-  password        String
-  isEmailVerified Boolean  @default(false)
-  status          String?  @default("active")
-  role            String   @default("passenger")
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
-  deletedAt       DateTime?
-  rides           Rides[]
+  id                 Int       @id @default(autoincrement())
+  email              String    @unique
+  fullName           String
+  username           String    @unique
+  nic                String    @unique
+  phone              String
+  address            String
+  password           String
+  isEmailVerified    Boolean   @default(false)
+  status             String?   @default("active")
+  isTemporary        Boolean   @default(false)
+  role               String    @default("passenger")
+  registeredByOperator Boolean  @default(false) 
+  operatorId         Int?      
+  operator           PhoneOperator? @relation(fields: [operatorId], references: [id])
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  deletedAt          DateTime?
+  rides              Rides[] 
 }
 
 model PhoneOperator {
@@ -80,6 +84,7 @@ model PhoneOperator {
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
   deletedAt       DateTime?
+  passengers Passenger[]
 }
 
 model Drivers {
