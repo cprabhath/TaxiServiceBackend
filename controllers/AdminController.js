@@ -241,7 +241,7 @@ const addPhoneOperator = async (req, res) => {
       data: {
         email: email,
         fullName: fullName,
-        username: username,
+        username: email,
         nic: nic,
         password: "$2y$10$rz01wdO2hLJVNwlyLKETNu/ZSRIT7ljjlpzRwejcYK36O72YKyaqO",
         phone: phone,
@@ -252,7 +252,7 @@ const addPhoneOperator = async (req, res) => {
     const emailSent = await emailServices.sendEmail(res, email, "Password", {
       heading: "One Time Password",
       username: fullName.toUpperCase(),
-      token: "123456",
+      token: "Your username is : " + email + " and password is : 123456",
     });
 
     if (emailSent) {

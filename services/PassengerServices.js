@@ -8,7 +8,6 @@ const db = require("../services/db");
 
 // ------------------------------ Login ---------------------------------//
 const login = async (res, email) => { 
-      
     // Check if the user exists
     const existingUser = await getUserByEmail(email);
 
@@ -34,7 +33,6 @@ const login = async (res, email) => {
             fullName: existingUser.fullName,
         },
     };
-
 }
 
 // ------------------------------ Get User By email ----------------------//
@@ -74,7 +72,8 @@ const registerPassenger = async (email, fullname, username, nic, phone, address,
                 phone: phone,
                 address: address,
                 password: hashedPassword,
-                isEmailVerified: false
+                isEmailVerified: false,
+                isTemporary: false,
             }
         });
 
@@ -128,8 +127,6 @@ const bookRide = async (bookingData) => {
         return { success: false, message: "Failed to book the ride." };
     }
 };
-
-
 
 
 // ---------------- Export the modules ------------------

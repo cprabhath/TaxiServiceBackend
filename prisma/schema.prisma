@@ -60,6 +60,7 @@ model Passenger {
   status             String?   @default("active")
   isTemporary        Boolean   @default(false)
   role               String    @default("passenger")
+  profileImage       String    @default("https://firebasestorage.googleapis.com/v0/b/taxiservice-3547e.appspot.com/o/uploads%2F9220769.png?alt=media&token=f5e436ef-dbfd-4c5c-b9ae-998d30d01b42")
   registeredByOperator Boolean  @default(false) 
   operatorId         Int?      
   operator           PhoneOperator? @relation(fields: [operatorId], references: [id])
@@ -79,6 +80,7 @@ model PhoneOperator {
   phone           String
   address         String
   isEmailVerified Boolean  @default(false)
+  profileImage    String   @default("https://firebasestorage.googleapis.com/v0/b/taxiservice-3547e.appspot.com/o/uploads%2F896334.png?alt=media&token=f330e7b4-ca6e-441d-b4ee-321f956ae06c")
   role            String   @default("phone_operator")
   status          String?  @default("active")
   createdAt       DateTime @default(now())
@@ -97,6 +99,7 @@ model Drivers {
   address         String
   password        String
   isEmailVerified Boolean
+  profileImage    String   @default("https://firebasestorage.googleapis.com/v0/b/taxiservice-3547e.appspot.com/o/uploads%2F8583437.png?alt=media&token=1ca1802e-a46b-4622-89e1-257e76d71481")
   status          String?  @default("active")
   role            String   @default("driver")
   createdAt       DateTime @default(now())

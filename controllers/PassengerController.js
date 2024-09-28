@@ -1,6 +1,7 @@
 const ResponseService = require("../services/ResponseService");
 const PassengerServices = require("../services/PassengerServices");
 const bcrypt = require("bcrypt");
+const db = require("../services/db");
 
 //----------------------------------Passenger Login--------------------------------//
 const PassengerLogin = async (req, res) => {
@@ -73,6 +74,100 @@ const getTotalPassengerCount = async (req, res) => {
   }
 };
 // --------------------------------------------------------------------------------- //
+
+// ------------------------------- get total passengers ----------------------------- //
+const getTotalPassenger = async (req, res) => {
+  try {
+    const totalPassengers = await db.passenger.findMany({
+      where:{
+        deletedAt: null
+      },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        username: true,
+        nic: true,
+        phone: true,
+        address: true,
+        isTemporary: true,
+        profileImage: true,
+        updatedAt: true,
+        createdAt: true,
+      },
+    });
+    return ResponseService(res, "Success", 200, totalPassengers);
+
+  } catch (err) {
+    console.error("Error getting total passengers: ", err);
+    return ResponseService(res, "Error", 500, "Failed to get total passengers");
+  }
+};
+// --------------------------------------------------------------------------------- //
+
+// ------------------------------- Update Passenger Status ----------------------------- //
+const updatePassengerStatus = async (req, res) => {
+  try {
+    const userID = req.params.id;
+    const { status } = req.body;
+    await db.passenger.update({
+      where: {
+        id: parseInt(userID),
+      },
+      data: {
+        status: status,
+      },
+    });
+    return ResponseService(res, "Success", 200, "Passenger status updated successfully!");
+  } catch (err) {
+    console.error("Error updating passenger status: ", err);
+    return ResponseService(res, "Error", 500, "Failed to update passenger status");
+  }
+};
+// --------------------------------------------------------------------------------- //
+
+// ------------------------------- Delete Passenger ----------------------------- //  
+const deletePassenger = async (req, res) => {
+  try {
+    const userID = req.params.id;
+    await db.passenger.update({
+      where: {
+        id: parseInt(userID),
+      },
+      data: {
+        deletedAt: new Date(),
+      },
+    });
+    return ResponseService(res, "Success", 200, "Passenger deleted successfully!");
+  } catch (err) {
+    console.error("Error deleting passenger: ", err);
+    return ResponseService(res, "Error", 500, "Failed to delete passenger");
+  }
+};
+// --------------------------------------------------------------------------------- //
+
+// ------------------------------- Get Passenger By ID ----------------------------- //
+const getPassengerById = async (req, res) => {
+  try {
+    const userID = req.params.id;
+    const passenger = await db.passenger.findUnique({
+      where: {
+        id: parseInt(userID),
+        deletedAt: null
+      },
+      include:{
+        operator: true,
+      }
+    });
+    return ResponseService(res, "Success", 200, passenger);
+  } catch (err) {
+    console.error("Error getting passenger: ", err);
+    return ResponseService(res, "Error", 500, "Failed to get passenger");
+  }
+};
+// --------------------------------------------------------------------------------- //
+
+
 //---------------------------Book a Ride---------------//
 // Book Ride Function
 const bookRide = async (req, res) => {
@@ -105,4 +200,8 @@ module.exports = {
   PassengerRegister,
   getTotalPassengerCount,
   bookRide,
+  getTotalPassenger,
+  updatePassengerStatus,
+  deletePassenger,
+  getPassengerById,
 };

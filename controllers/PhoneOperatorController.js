@@ -101,10 +101,11 @@ const getPhoneOperatorProfile = async (req, res) => {
       id: true,
       email: true,
       fullName: true,
-      username: true,
       nic: true,
       phone: true,
       address: true,
+      createdAt: true,
+      updatedAt: true,
     },
   })
 
@@ -192,6 +193,44 @@ const getAllUsernames = async (req, res) => {
   return ResponseService(res, "Success", 200, usernames);
 };
 // -----------------------------------------------------------------------//
+
+// -------------------------------- Register Passenger --------------------------------//
+const RegisterPassenger = async (req, res) => {
+  const { operatorId ,email, fullName, username, nic, password, phone, address } = req.body;
+
+  // Checking if the user exists
+  const existingUser = await PassengerService.getPassengerByUsername(username);
+
+  if (existingUser) {
+    return ResponseService(res, "Error", 400, "Passenger already exists");
+  }
+
+  // Hash the password
+  const hashedPassword = await bcrypt.hash(password, 10);
+
+  // Create a new passenger document
+  await db.passenger.create({
+    data: {
+      email: email,
+      fullName: fullName,
+      username: username,
+      nic: nic,
+      phone: phone,
+      address: address,
+      isEmailVerified: false,
+      isTemporary: true,
+      registeredByOperator: true,
+      operatorId: operatorId,
+    },
+  });
+
+  return ResponseService(
+    res,
+    "Success",
+    201,
+    "Passenger registered successfully!"
+  );
+};
 // ------------------------------ Exporting the functions ------------------------------//
 module.exports = {
   Login,
@@ -202,4 +241,5 @@ module.exports = {
   updateOperatorStatus,
   deletePhoneOperator,
   getAllUsernames,
+  RegisterPassenger,
 };
