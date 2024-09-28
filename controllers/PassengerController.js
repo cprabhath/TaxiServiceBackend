@@ -65,10 +65,6 @@ const getTotalPassengerCount = async (req, res) => {
 }
 // --------------------------------------------------------------------------------- //
 //---------------------------Book a Ride---------------//
-const express = require('express');
-const router = express.Router();
-const { bookRide } = require('./PassengerServices');
-
 // Book Ride Function
 const bookRide = async (req, res) => {
     try {
