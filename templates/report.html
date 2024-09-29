@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Earnings Report</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        padding: 20px;
+        color: #333;
+      }
+
+      .container {
+        background-color: #fff;
+        padding: 20px;
+        border-radius: 8px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #4a90e2;
+      }
+
+      .details {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+      }
+
+      .company-details,
+      .driver-details {
+        width: 45%;
+      }
+
+      .details-section h2 {
+        margin-bottom: 10px;
+        color: #4a90e2;
+      }
+
+      .details-section p {
+        margin: 4px 0;
+      }
+
+      .created-date {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid #ddd;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        text-align: left;
+      }
+
+      th {
+        background-color: #f4f4f9;
+      }
+
+      .logo {
+        display: block;
+        margin: 0 auto 20px;
+        max-width: 150px;
+      }
+
+      .header {
+        text-align: center;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="container">
+      <!-- Header Section -->
+      <div class="header">
+        <img src="company-logo.png" alt="Company Logo" class="logo" />
+        <h1>Earnings Report</h1>
+        <!-- Date Created -->
+        <div class="created-date">
+          <p>{{createdDate}}</p>
+        </div>
+      </div>
+
+      <!-- Driver's and Company's Details (Side by Side) -->
+      <div class="details">
+        <!-- Company Details -->
+        <div class="company-details details-section">
+          <h2>Company's Details</h2>
+          <p><strong>Company Name:</strong> {{company.name}}</p>
+          <p><strong>Address:</strong> {{company.address}}</p>
+          <p><strong>Telephone:</strong> {{company.telephone}}</p>
+        </div>
+
+        <!-- Driver's Details -->
+        <div class="driver-details details-section">
+          <h2>Driver's Details</h2>
+          <p><strong>Driver Name:</strong> {{driver.name}}</p>
+          <p><strong>Address:</strong> {{driver.address}}</p>
+          <p><strong>NIC:</strong> {{driver.nic}}</p>
+          <p><strong>Telephone:</strong> {{driver.telephone}}</p>
+        </div>
+      </div>
+
+      <!-- Earnings Table -->
+      <table>
+        <thead>
+          <tr>
+            <th>Date</th>
+            <th>Description</th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {{#each earnings}}
+          <tr>
+            <td>{{date}}</td>
+            <td>{{description}}</td>
+            <td>{{amount}}</td>
+          </tr>
+          {{/each}}
+          <tr>
+            <td colspan="2"><strong>Total Earnings</strong></td>
+            <td><strong>{{totalEarnings}}</strong></td>
+          </tr>
+          <tr>
+            <td colspan="2"><strong>Service Fee</strong></td>
+            <td><strong>{{serviceFee}}</strong></td>
+          </tr>
+          <tr>
+            <td colspan="2"><strong>Government Tax</strong></td>
+            <td><strong>{{tax}}</strong></td>
+          </tr>
+          <tr>
+            <td colspan="2"><strong>Net Earnings</strong></td>
+            <td><strong>{{netEarnings}}</strong></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </body>
+</html>
