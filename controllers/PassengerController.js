@@ -74,7 +74,6 @@ const PassengerRegister = async (req, res) => {
   })
 
   // Create a new user
-
     const emailSent = await emailServices.sendEmail(res, email, "Password", {
       heading: "One Time Password",
       username: fullname.toUpperCase(),
