@@ -13,7 +13,7 @@ router.get("/get-vehicle/:id", VehicleController.getVehicleById);
 router.get("/update-vehicle/:id", VehicleController.updateVehicle);
 router.put("/delete-vehicle/:id", VehicleController.deleteVehicle);
 router.put("/update-vehicle-status/:id", VehicleController.updateVehicleStatus);
-router.get("/get-all-vehicle-types", VehicleController.getAllVehicleTypes);
+router.post("/get-all-vehicle-types", VehicleController.getAllVehicleTypes);
 // ------------------------------------------------------ //
 
 //------------------Export module----------------//
