@@ -13,6 +13,7 @@ router.get("/profile", AdminController.getAdminProfile);
 router.put("/update-profile", AdminController.updateAdminProfile);
 router.get("/get-net-income", AdminController.getNetIncome); // Not implemented
 router.get("/total-income", AdminController.getTotalIncome);
+router.post("/add-phone-operator", AdminController.addPhoneOperator);
 // ---------------------------------------------------- //
 
 //---------------------Export module------------------- //

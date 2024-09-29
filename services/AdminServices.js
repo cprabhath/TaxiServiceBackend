@@ -2,7 +2,7 @@
 
 // --------- Import the required modules ----------------
 const db = require("../services/db");
-const ImageServices = require("../services/ImageServices");
+const emailServices = require("./EmailService");
 // ------------------------------------------------------
 
 // ---------------- getAdminByUsername ------------------
@@ -50,37 +50,25 @@ const removeOTP = (username) => {
 // ----------------- Register an Admin ------------------
 const registerAdmin = async (fullName, profileImage, username, email) => {
     try {
+        const existingUser = await getAdminByUsername(username);
 
-        console.log("ADMIN USER", {
-            fullName: fullName,
-            profileImage: profileImage,
-            username: username,
-            email: email,
-        })
-
-        //const existingUser = await getAdminByUsername(username);
-
-        //const url = await ImageServices.uploadImage(profileImage, username, "Admin", "jpg");
-
-        //console.log("URL", url);
-
-        // if (!existingUser) {
-        //     // Generate OTP
-        //     const OTP = generateOTP();
-        //     await db.admin.create({
-        //         data: {
-        //             fullName: fullName,
-        //             profileImage: profileImage,
-        //             username: username,
-        //             isEmailVerified: false,
-        //             email: email,
-        //             otp: OTP,
-        //         },
-        //     });
-        //     return { message: "User created successfully " + "OTP is : " + OTP };
-        // } else {
-        //     return { message: "User already exists" };
-        // }
+        if (!existingUser) {
+            // Generate OTP
+            const OTP = generateOTP();
+            await db.admin.create({
+                data: {
+                    fullName: fullName,
+                    profileImage: profileImage,
+                    username: username,
+                    isEmailVerified: false,
+                    email: email,
+                    otp: OTP,
+                },
+            });
+            return { message: "User created successfully " + "OTP is : " + OTP };
+        } else {
+            return { message: "User already exists" };
+        }
     } catch (err) {
         console.error("ERROR " + err.message);
         return { message: "ERROR " + err.message };
@@ -188,6 +176,6 @@ module.exports = {
     getAdminById,
     updateAdminProfile,
     getTotalIncome,
-    getNetIncome
+    getNetIncome,
 };
 // ------------------------------------------------------

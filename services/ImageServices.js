@@ -1,73 +1,36 @@
-// -------------------- firebase storage --------------------
-const bucket = require('../utils/firebase');
 const path = require('path');
+const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-// ---------------------------------------------------------
+const multer = require('multer');
 
-// ------------------------ Upload image ------------------------
-const uploadImage = async (filePath, userId, imageType , fileType = 'jpg') => {
-    try {
-        // Generate a unique filename, e.g., admin-uuid.jpg or user-uuid.png
-        const uniqueId = uuidv4();
-        const fileName = `${imageType}-${userId}-${uniqueId}.${fileType}`;
+// Set up Multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/');
+  },
+  filename: (req, file, cb) => {
+    const uniqueId = uuidv4();
+    const fileExtension = path.extname(file.originalname);
+    const fileName = `${file.fieldname}-${uniqueId}${fileExtension}`;
+    cb(null, fileName);
+  },
+});
 
-        // Determine the correct content type based on file extension
-        const contentType = {
-            jpg: 'image/jpeg',
-            jpeg: 'image/jpeg',
-            png: 'image/png',
-            gif: 'image/gif',
-        };
+const upload = multer({ storage });
 
-        // Validate the file type
-        if (!contentType[fileType]) {
-            throw new Error('Unsupported file type');
-        }
-
-        // Upload the image to Firebase Storage
-        await bucket.upload(filePath, {
-            destination: `uploads/${fileName}`, // Save to uploads folder with unique name
-            metadata: {
-                contentType: contentType[fileType], // Set the content type
-            },
-        });
-
-        // Get a signed URL for the uploaded image
-        const file = bucket.file(`uploads/${fileName}`);
-        const [url] = await file.getSignedUrl({
-            action: 'read',
-            expires: '03-01-2500',
-        });
-
-        console.log('File uploaded successfully. Accessible at:', url);
-        return url;
-    } catch (err) {
-        console.error('Error uploading file:', err.message);
-        throw err;
+// Upload Image Function
+const uploadImage = async (req, res) => {
+  upload.single('image')(req, res, (err) => {
+    if (err) {
+      console.error('Error uploading file:', err.message);
+      return res.status(500).json({ message: 'File upload failed' });
     }
+
+    const filePath = path.join(__dirname, '../uploads/', req.file.filename);
+    res.status(200).json({ message: 'File uploaded successfully', filePath });
+  });
 };
-// --------------------------------------------------------------
-
-// -------------------------- get image URL -----------------------
-const getImageUrl = async (fileName) => {
-    try {
-        const file = bucket.file(fileName);
-        const [url] = await file.getSignedUrl({
-            action: 'read',
-            expires: '03-01-2500',
-        });
-
-        console.log('File is accessible at:', url);
-        return url;
-    } catch (err) {
-        console.error('Error getting file URL:', err.message);
-        throw err;
-    }
-};
-// ----------------------------------------------------------------
-
 
 module.exports = {
-    uploadImage,
-    getImageUrl
-}
+  uploadImage,
+};

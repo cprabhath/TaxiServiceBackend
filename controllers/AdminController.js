@@ -5,6 +5,7 @@ const jwt = require("jsonwebtoken");
 const adminServices = require("../services/AdminServices");
 const emailServices = require("../services/EmailService");
 const ResponseService = require("../services/ResponseService");
+const db = require("../services/db");
 //-----------------------------------------------------------------------//
 
 let emailCount = 0;
@@ -102,7 +103,6 @@ const Login = async (req, res) => {
 
     // send admin details
 
-
     // Removing the OTP after use
     await adminServices.removeOTP(username);
 
@@ -122,7 +122,7 @@ const Register = async (req, res) => {
       .status(400)
       .json({ message: "Please provide required information" });
   }
-  const { fullName, profileImage ,username, email } = req.body;
+  const { fullName, profileImage, username, email } = req.body;
 
   //Checking if the email and password are provided
   if ((email === "", fullName === "", username === "", profileImage === "")) {
@@ -133,22 +133,21 @@ const Register = async (req, res) => {
 
   //Checking if the email exists in the database
   try {
-    //const existingUser = await adminServices.getAdminByUsername(username);
-    await adminServices
-    .registerAdmin(fullName, profileImage ,username, email)
-    .then((response) => {
-      return res.status(201).json({ message: response.message });
-    })
-    .catch((err) => {
-      return res.status(500).json({ message: "ERROR " + err.message });
-    });
+    const existingUser = await adminServices.getAdminByUsername(username);
 
-    // if (!existingUser) {
-    //   //Creating the user
-      
-    // } else {
-    //   return res.status(400).json({ message: "User already exists" });
-    // }
+    if (!existingUser) {
+      //Creating the user
+      await adminServices
+        .registerAdmin(fullName, profileImage, username, email)
+        .then((response) => {
+          return res.status(201).json({ message: response.message });
+        })
+        .catch((err) => {
+          return res.status(500).json({ message: "ERROR " + err.message });
+        });
+    } else {
+      return res.status(400).json({ message: "User already exists" });
+    }
   } catch (err) {
     return res.status(500).json({ message: "ERROR " + err.message });
   }
@@ -223,6 +222,60 @@ const getNetIncome = async (req, res) => {
 };
 // ----------------------------------------------------------------------//
 
+// ------------------------- Phone Operator add by admin -----------------//
+const addPhoneOperator = async (req, res) => {
+  const { email, fullName, username, nic, phone, address } = req.body;
+
+  try {
+    const existingOperator = await db.phoneOperator.findUnique({
+      where: {
+        email: email,
+      },
+    });
+
+    if (existingOperator) {
+      return ResponseService(res, "Error", 400, "Operator already exists");
+    }
+
+    await db.phoneOperator.create({
+      data: {
+        email: email,
+        fullName: fullName,
+        username: email,
+        nic: nic,
+        password: "$2y$10$rz01wdO2hLJVNwlyLKETNu/ZSRIT7ljjlpzRwejcYK36O72YKyaqO",
+        phone: phone,
+        address: address,
+      },
+    });
+
+    const emailSent = await emailServices.sendEmail(res, email, "Password", {
+      heading: "One Time Password",
+      username: fullName.toUpperCase(),
+      token: "Your username is : " + email + " and password is : 123456",
+    });
+
+    if (emailSent) {
+      return ResponseService(
+        res,
+        "Success",
+        200,
+        "Operator added successfully"
+      );
+    } else {
+      return ResponseService(
+        res,
+        "Error",
+        400,
+        "Failed to send the OTP. Please try again!"
+      );
+    }
+  } catch (err) {
+    return ResponseService(res, "Error", 500, "ERROR " + err.message);
+    return { message: "ERROR " + err.message };
+  }
+};
+
 // -------------------------- Exporting the module ----------------------//
 module.exports = {
   Login,
@@ -231,5 +284,6 @@ module.exports = {
   updateAdminProfile,
   getTotalIncome,
   getNetIncome,
+  addPhoneOperator,
 };
 // ----------------------------------------------------------------------//

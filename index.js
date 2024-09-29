@@ -170,18 +170,37 @@ try {
 }
 // -------------------------------------------------------------------
 
+// ------------------------ Server Health Check -----------------------
+app.get("/api/v1/health", async (req, res) => {
+  try {
+    await prisma.$connect();
+    
+    res.status(200).json({
+      status: 'success',
+      message: 'Server and database are running',
+    });
+  } catch (error) {
+    res.status(500).json({
+      status: 'error',
+      message: 'Server is running, but database connection failed',
+    });
+  }
+});
+
 // ------------------- Routes for the application --------------------
 try {
   const AdminRoute = require("./routes/AdminRoutes");
   const DriverRoute = require("./routes/DriverRoutes");
   const PassengerRoute = require("./routes/PassengerRoutes");
   const PhoneOperatorRoute = require("./routes/PhoneOperatorRoutes");
+  const VehicleRoute = require("./routes/VehicleRoutes");
   // -------------------------------------------------------------------
 
   app.use("/api/v1/admin", AdminRoute);
   app.use("/api/v1/driver", DriverRoute);
   app.use("/api/v1/passenger", PassengerRoute);
   app.use("/api/v1/phone-operator", PhoneOperatorRoute);
+  app.use("/api/v1/vehicle", VehicleRoute);
   // --------------------------------------------------------------------
   
 } catch (e) {

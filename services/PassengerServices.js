@@ -8,7 +8,6 @@ const db = require("../services/db");
 
 // ------------------------------ Login ---------------------------------//
 const login = async (res, email) => { 
-      
     // Check if the user exists
     const existingUser = await getUserByEmail(email);
 
@@ -34,7 +33,6 @@ const login = async (res, email) => {
             fullName: existingUser.fullName,
         },
     };
-
 }
 
 // ------------------------------ Get User By email ----------------------//
@@ -43,6 +41,7 @@ const getUserByEmail = async (email) => {
         const user = await db.passenger.findFirst({ // UPDATED
             where: {
                 email: email,
+                deletedAt: null,
             },
         });
         return user;
@@ -74,7 +73,8 @@ const registerPassenger = async (email, fullname, username, nic, phone, address,
                 phone: phone,
                 address: address,
                 password: hashedPassword,
-                isEmailVerified: false
+                isEmailVerified: false,
+                isTemporary: false,
             }
         });
 
@@ -108,12 +108,34 @@ const getTotalPassengerCount = async () => {
 }
 // --------------------------------------------------------------------------------- //
 
+//---------------------------Book a Ride---------------//
+const bookRide = async (bookingData) => {
+    try {
+        await db.rides.create({
+            data: {
+                passengerId: parseInt(bookingData.passengerId),
+                pickupLocation: bookingData.currentPlaceName,
+                dropLocation: bookingData.destination,
+                distance: bookingData.distance,
+                duration: bookingData.duration,
+                cost: bookingData.cost,
+                vehicleId: parseInt(bookingData.vehicleId),
+            },
+        });
+        return { success: true, message: "Ride booked successfully." };
+    } catch (error) {
+        console.error("Error booking the ride:", error);
+        return { success: false, message: "Failed to book the ride." };
+    }
+};
+
 
 // ---------------- Export the modules ------------------
 module.exports = {
     getUserByEmail,
     registerPassenger,
     login,
+    bookRide,
     getTotalPassengerCount
 };
 

@@ -27,3 +27,4 @@ dist-ssr
 *.env
 taxiservice-3547e-firebase-adminsdk-ssw91-ab8428e8b5.json
 sdk.js
+migrations
