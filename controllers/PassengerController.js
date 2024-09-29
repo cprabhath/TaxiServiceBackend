@@ -2,6 +2,7 @@ const ResponseService = require("../services/ResponseService");
 const PassengerServices = require("../services/PassengerServices");
 const bcrypt = require("bcrypt");
 const db = require("../services/db");
+const emailServices = require("../services/EmailService");
 
 //----------------------------------Passenger Login--------------------------------//
 const PassengerLogin = async (req, res) => {
@@ -40,25 +41,64 @@ const PassengerLogin = async (req, res) => {
 };
 
 //----------------------------------Passenger Register--------------------------------//
-const PassengerRegister = (req, res) => {
+const PassengerRegister = async (req, res) => {
   // Checking if the user exists
-  const { fullname, email, password, username, nic, phone, address } = req.body;
+  const { fullname, email, nic, phone, address, profileImage, adminID, registeredby } = req.body;
+  try {
+
+  const existingUser = await PassengerServices.getUserByEmail(email);
+
+  if (existingUser) {
+    return ResponseService(
+      res,
+      "Error",
+      400,
+      "Passenger already exists"
+    );
+  }
+
+  await db.passenger.create({
+    data: {
+      fullName: fullname,
+      email: email,
+      username: email,
+      nic: nic,
+      phone: phone,
+      address: address,
+      password: "$2y$10$rz01wdO2hLJVNwlyLKETNu/ZSRIT7ljjlpzRwejcYK36O72YKyaqO",
+      isTemporary : registeredby,
+      isEmailVerified: false,
+      profileImage: profileImage,
+      adminId: parseInt(adminID),
+    }
+  })
 
   // Create a new user
-  try {
-    const passenger = PassengerServices.registerPassenger(
-      email,
-      fullname,
-      username,
-      nic,
-      phone,
-      address,
-      password
-    );
-    return ResponseService(res, "Success", 201, passenger);
+
+    const emailSent = await emailServices.sendEmail(res, email, "Password", {
+      heading: "One Time Password",
+      username: fullname.toUpperCase(),
+      token: "Your username is : " + email + " and password is : 123456",
+    });
+
+    if (emailSent) {
+      return ResponseService(
+        res,
+        "Success",
+        200,
+        "Operator added successfully"
+      );
+    } else {
+      return ResponseService(
+        res,
+        "Error",
+        400,
+        "Failed to send the OTP. Please try again!"
+      );
+    }
   } catch (ex) {
     console.error("Error registering passenger: ", ex);
-    return ResponseService(res, "Error", 500, "Failed to register passenger");
+    return ResponseService(res, "Error", 500, "Failed to register passenger" + ex);
   }
 };
 
@@ -157,8 +197,10 @@ const getPassengerById = async (req, res) => {
       },
       include:{
         operator: true,
+        admin: true,
       }
     });
+
     return ResponseService(res, "Success", 200, passenger);
   } catch (err) {
     console.error("Error getting passenger: ", err);

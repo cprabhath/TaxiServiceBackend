@@ -41,6 +41,7 @@ const getUserByEmail = async (email) => {
         const user = await db.passenger.findFirst({ // UPDATED
             where: {
                 email: email,
+                deletedAt: null,
             },
         });
         return user;
