@@ -52,7 +52,7 @@ model Passenger {
   id                 Int       @id @default(autoincrement())
   email              String    @unique
   fullName           String
-  username           String    @unique
+  username           String    @unique @default("null")
   nic                String    @unique
   phone              String
   address            String
