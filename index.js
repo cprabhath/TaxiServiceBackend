@@ -194,6 +194,7 @@ try {
   const PassengerRoute = require("./routes/PassengerRoutes");
   const PhoneOperatorRoute = require("./routes/PhoneOperatorRoutes");
   const VehicleRoute = require("./routes/VehicleRoutes");
+
   // -------------------------------------------------------------------
 
   app.use("/api/v1/admin", AdminRoute);
