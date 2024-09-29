@@ -9,7 +9,7 @@ const createVehicle = async (req, res) => {
 
     try {
         // Create a new vehicle
-        await db.vehicles.create({
+        await db.vehicle.create({
             data: {
                 vehicleNumber: vehicleNumber,
                 vehicleType: vehicleType,
