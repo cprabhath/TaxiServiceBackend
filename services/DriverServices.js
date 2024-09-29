@@ -154,6 +154,20 @@ const getDriverProfile = async (driverId) => {
     }
 };
 
+//---------------------------get Vehicle Details-----------------------------------//
+const getVehicleDetails = async (vehicleId) => {
+    try {
+        const vehicle = await db.vehicle.findUnique({ 
+            where: {
+                id: parseInt(vehicleId),
+                },
+        });
+
+    } catch (err) {
+        console.error("Error fetching vehicle details: ", err);
+}
+}
+
 
 //----------------------------------------get ride list----------------------------------//
 const getRideList = async () => {
@@ -292,7 +306,8 @@ module.exports = {
     getTotalCount,
     getTotalVehicleCount,
     getTotalEarnings,
-    updateRideStatus
+    updateRideStatus,
+    getVehicleDetails
 };
 
 // ------------------------------------------------------
