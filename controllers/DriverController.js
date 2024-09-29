@@ -107,6 +107,21 @@ const getRideList = async (req, res) => {
 }
 // ------------------------------------------------------------------------------//
 
+
+// ---------------------------------- Fetch Vehicle details ---------------------------//
+
+const getVehicleDetails = async (req, res) => {
+    const { vehicleId } = req.body;
+
+    try {
+        const vehicleDetails = await DriverServices.getVehicleDetails(vehicleId);
+        return ResponseService(res, "Success", 200, vehicleDetails);
+    } catch (ex) {
+        console.error("Error fetching Vehicle Details: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch  Vehicle Details");
+    }
+}
+
 //--------------------------------update ride status----------------------------//
 const updateRideStatus = async (req, res) => {
     const { rideId } = req.params;
@@ -211,5 +226,6 @@ module.exports = {
     getTotalRidesCount,
     getTotalVehicleCount,
     getTotalEarnings,
-    updateRideStatus
+    updateRideStatus,
+    getVehicleDetails
 }

@@ -17,6 +17,7 @@ router.post("/get-ride-count", DriverController.getTotalRidesCount);
 router.post("/total-earnings", DriverController.getTotalEarnings);
 router.put("/update-status/:driverId", DriverController.updateDriverStatus);
 router.put("/rides/:rideId", DriverController.updateRideStatus);
+router.post("/vehicle/details", DriverController.getVehicleDetails);
 
 
 // ------------------------------------------------------ //
