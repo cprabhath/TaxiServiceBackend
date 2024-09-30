@@ -35,6 +35,31 @@ const login = async (res, email) => {
     };
 }
 
+//-------------get image and id of ride-------------//
+
+const getVehiclesByType = async (type )=>{
+        try {
+            console.log("called");
+          const vehicles = await db.vehicle.findMany({
+            where: {
+              vehicleType: type,
+              isVehicleVerified: true,
+              deletedAt: null,
+            },
+            select: {
+              id: true,
+              vehicleNumber: true,
+              vehicleType: true,
+              ImagePath: true,
+            },
+          });
+          return vehicles;
+        } catch (error) {
+          console.error('Error fetching vehicles by type:', error);
+          throw new Error('Unable to fetch vehicles.');
+        }
+}
+
 // ------------------------------ Get User By email ----------------------//
 const getUserByEmail = async (email) => {
     try {
@@ -136,7 +161,8 @@ module.exports = {
     registerPassenger,
     login,
     bookRide,
-    getTotalPassengerCount
+    getTotalPassengerCount,
+    getVehiclesByType,
 };
 
 // ------------------------------------------------------
