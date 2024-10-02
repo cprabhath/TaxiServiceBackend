@@ -12,8 +12,6 @@ router.post("/login", PassengerController.PassengerLogin);
 router.post("/register", PassengerController.PassengerRegister);
 router.post('/book-ride', PassengerController.bookRide);
 
-router.get("/getVehiclesByType", PassengerController.getVehiclesByType);
-
 // ------------------------------------------------------ //
 
 // ----------------------- Administrator functions ----------------------- //

@@ -17,6 +17,9 @@ router.get('/get-vehicles-by-driver', VehicleController.getVehicleDetailsByDrive
 router.put("/delete-vehicle/:id", VehicleController.deleteVehicle);
 router.put("/update-vehicle-status/:id", VehicleController.updateVehicleStatus);
 router.post("/get-all-vehicle-types", VehicleController.getAllVehicleTypes);
+router.post("/get-vehicle-details", VehicleController.getVehicleDetails);
+
+
 // ------------------------------------------------------ //
 
 //------------------Export module----------------//

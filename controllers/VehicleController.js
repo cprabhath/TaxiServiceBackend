@@ -201,30 +201,28 @@ const getAllVehicleTypes = async (req, res) => {
         return ResponseService(res, "Error", 500, "Failed to fetch vehicle types");
     }
 };
-
-const getVehiclesByType = async (req, res) => {
+const getVehicleDetails = async (req, res) => {
+    const { vehicleType } = req.body;
 
     try {
-        console.log("called");
-      const vehicles = await db.vehicle.findMany({
-        where: {
-          vehicleType: req.body.type,
-          isVehicleVerified: true,
-          deletedAt: null,
-        },
-        select: {
-          id: true,
-          vehicleNumber: true,
-          vehicleType: true,
-          ImagePath: true,
-        },
-      });
-      return vehicles;
-    } catch (error) {
-      console.error('Error fetching vehicles by type:', error);
-      throw new Error('Unable to fetch vehicles.');
+        const vehicleTypes = await db.vehicle.findMany({
+            where: {
+                vehicleType: vehicleType
+            },
+            select: {
+                vehicleNumber: true,
+                vehicleType: true,
+                ImagePath: true
+            }
+        });
+        return ResponseService(res, "Success", 200, vehicleTypes);
+    } catch (ex) {
+        console.error("Error fetching vehicle types: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch vehicle types");
     }
 };
+
+
 // -----------------------------------------------------------------------//
 
 // ------------------------ Update vehicle status -------------------------
@@ -258,5 +256,9 @@ module.exports = {
     updateVehicle,
     deleteVehicle,
     getAllVehicleTypes,
-    updateVehicleStatus
+    updateVehicleStatus,
+    getVehicleByNumber,
+    getVehicleDetailsByDriverId,
+    getVehiclesByDriver,
+    getVehicleDetails,
 };
