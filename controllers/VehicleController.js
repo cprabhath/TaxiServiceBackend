@@ -15,8 +15,8 @@ const createVehicle = async (req, res) => {
                 vehicleType: vehicleType,
                 vehicleModel: vehicleModel,
                 vehicleColor: vehicleColor,
-                SeatingCapacity: vehicleCapacity,
                 vehicleOwner: vehicleOwner,
+                SeatingCapacity: vehicleCapacity,
                 ImagePath: images
             }
         });
@@ -32,7 +32,11 @@ const createVehicle = async (req, res) => {
 // ---------------------- Get all vehicles -------------------------------
 const getAllVehicles = async (req, res) => {
     try {
-        const vehicleList = await db.vehicle.findMany();
+        const vehicleList = await db.vehicle.findMany({
+            where: {
+                deletedAt: null
+            }
+        });
         return ResponseService(res, "Success", 200, vehicleList);
     } catch (ex) {
         console.error("Error fetching vehicles: ", ex);
@@ -47,7 +51,8 @@ const getVehicleById = async (req, res) => {
         const vehicleId = req.params.id;
         const vehicle = await db.vehicle.findUnique({
             where: {
-                id: parseInt(vehicleId)
+                id: parseInt(vehicleId),
+                deletedAt: null
             }
         });
 
@@ -118,7 +123,8 @@ const getAllVehicleTypes = async (req, res) => {
     try {
         const vehicleTypes = await db.vehicle.findMany({
             where: {
-                vehicleType: vehicleType
+                vehicleType: vehicleType,
+                deletedAt: null
             }
         });
         return ResponseService(res, "Success", 200, vehicleTypes);
@@ -132,15 +138,13 @@ const getAllVehicleTypes = async (req, res) => {
 // ------------------------ Update vehicle status -------------------------
 const updateVehicleStatus = async (req, res) => {
     const vehicleId = req.params.id;
-    const { status } = req.body;
-
     try {
         await db.vehicle.update({
             where: {
                 id: parseInt(vehicleId)
             },
             data: {
-                status: status
+                status: "approved"
             }
         });
 

@@ -25,6 +25,7 @@ router.post("/vehicle/details", DriverController.getVehicleDetails);
 // ------------------- Administrator functions ---------------- //
 router.get("/total-drivers", DriverController.getTotalDriverCount);
 router.get("/total-vehicles", DriverController.getTotalVehicleCount);
+router.get("/all-drivers", DriverController.getAllDrivers);
 // ------------------------------------------------------ //
 
 //------------------Export module----------------//

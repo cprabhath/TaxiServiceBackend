@@ -194,13 +194,18 @@ try {
   const PassengerRoute = require("./routes/PassengerRoutes");
   const PhoneOperatorRoute = require("./routes/PhoneOperatorRoutes");
   const VehicleRoute = require("./routes/VehicleRoutes");
+  const PlatformRoute = require("./routes/PlatformRoutes");
+  const ReportsRoute = require("./routes/ReportsRoute");
   // -------------------------------------------------------------------
 
+  // ------------------- Use the routes in the application --------------------
   app.use("/api/v1/admin", AdminRoute);
   app.use("/api/v1/driver", DriverRoute);
   app.use("/api/v1/passenger", PassengerRoute);
   app.use("/api/v1/phone-operator", PhoneOperatorRoute);
   app.use("/api/v1/vehicle", VehicleRoute);
+  app.use("/api/v1/platform", PlatformRoute);
+  app.use("/api/v1/reports", ReportsRoute);
   // --------------------------------------------------------------------
   
 } catch (e) {

@@ -1,6 +1,7 @@
 const ResponseService = require("../services/ResponseService");
 const DriverServices = require("../services/DriverServices");
 const bcrypt = require('bcrypt');
+const db = require("../services/db");
 
 
 //----------------------------------Driver Login--------------------------------//
@@ -71,6 +72,20 @@ const updateDriverStatus = async (req, res) => {
 
 // ----------------------------------------------------------------------//
 
+// ----------------------------------- get all drivers ----------------------------//
+const getAllDrivers = async (req, res) => {
+    try {
+        const drivers = await db.drivers.findMany({
+            where: {
+                deletedAt: null
+            }
+        });
+        return ResponseService(res, "Success", 200, drivers);
+    } catch (ex) {
+        console.error("Error fetching drivers: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch drivers");
+    }
+}
 
 
 
@@ -227,5 +242,6 @@ module.exports = {
     getTotalVehicleCount,
     getTotalEarnings,
     updateRideStatus,
-    getVehicleDetails
+    getVehicleDetails,
+    getAllDrivers
 }

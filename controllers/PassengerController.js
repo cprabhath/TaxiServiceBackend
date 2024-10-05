@@ -130,6 +130,8 @@ const getTotalPassengerCount = async (req, res) => {
 
 // ------------------------------- get total passengers ----------------------------- //
 const getTotalPassenger = async (req, res) => {
+
+  
   try {
     const totalPassengers = await db.passenger.findMany({
       where:{
@@ -147,6 +149,7 @@ const getTotalPassenger = async (req, res) => {
         profileImage: true,
         updatedAt: true,
         createdAt: true,
+        operator: true
       },
     });
     return ResponseService(res, "Success", 200, totalPassengers);
