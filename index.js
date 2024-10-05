@@ -27,14 +27,6 @@ const PORT = process.env.PORT || 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
 // -------------------------------------------------------------------
 
-// ----------------------- Start the server --------------------------
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-}).on("error", (err) => {
-  console.error("Error starting the server: ", err);
-});
-// -------------------------------------------------------------------
-
 // ------------------- Middleware for parsing requests ---------------
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -213,4 +205,16 @@ try {
   console.error("Error in routes: ", e.message);
   console.error("==================================================");
 }
+// -------------------------------------------------------------------
+
+// ----------------------- Start the server --------------------------
+app.listen(PORT, () => {
+  console.log("==================================================");
+  console.log(`Server is running on port ${PORT}`);
+  console.log("==================================================");
+}).on("error", (err) => {
+  console.error("=================== ERROR ========================");
+  console.error("Error starting the server: ", err);
+  console.error("==================================================");
+});
 // -------------------------------------------------------------------
