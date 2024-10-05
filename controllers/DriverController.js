@@ -124,7 +124,6 @@ const getRideList = async (req, res) => {
 
 
 // ---------------------------------- Fetch Vehicle details ---------------------------//
-
 const getVehicleDetails = async (req, res) => {
     const { vehicleId } = req.body;
 
@@ -229,6 +228,25 @@ const getTotalVehicleCount = async (req, res) => {
     }
 }
 
+// --------------------------------------- Update driver Profile ----------------------------------------//
+const updateDriverProfile = async (req, res) => {
+    const { driverId, vehiasdasd } = req.body;
+
+    try {
+        const updatedProfile = await db.drivers.update({
+            where: driverId,
+
+            data:{
+                
+            }
+        })
+        return ResponseService(res, "Success", 200, updatedProfile);
+    } catch (ex) {
+        console.error("Error updating driver profile: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to update driver profile");
+    }
+};
+
 // -------------------------------------------------------------------------------------------------//
 
 module.exports = {
@@ -243,5 +261,6 @@ module.exports = {
     getTotalEarnings,
     updateRideStatus,
     getVehicleDetails,
-    getAllDrivers
+    getAllDrivers,
+    updateDriverProfile
 }
