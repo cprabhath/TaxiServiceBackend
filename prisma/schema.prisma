@@ -109,6 +109,7 @@ model Drivers {
   updatedAt       DateTime  @updatedAt
   deletedAt       DateTime?
   rides           Rides[]
+  vehicles        Vehicle[]
 }
 
 model Vehicle {
@@ -125,6 +126,8 @@ model Vehicle {
   createdAt         DateTime  @default(now())
   updatedAt         DateTime  @updatedAt
   deletedAt         DateTime?
+  driverId          Int?
+  driver            Drivers? @relation(fields: [driverId], references: [id])
   rides             Rides[]
 }
 

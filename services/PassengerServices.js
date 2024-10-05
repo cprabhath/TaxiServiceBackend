@@ -59,7 +59,7 @@ const registerPassenger = async (email, fullname, username, nic, phone, address,
         if (existingUser) {
             throw new Error("Passenger already exists");
         }
-
+console.log('1');
         // Hash the password
         const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -111,24 +111,23 @@ const getTotalPassengerCount = async () => {
 //---------------------------Book a Ride---------------//
 const bookRide = async (bookingData) => {
     try {
-        await db.rides.create({
-            data: {
-                passengerId: parseInt(bookingData.passengerId),
-                pickupLocation: bookingData.currentPlaceName,
-                dropLocation: bookingData.destination,
-                distance: bookingData.distance,
-                duration: bookingData.duration,
-                cost: bookingData.cost,
-                vehicleId: parseInt(bookingData.vehicleId),
-            },
-        });
-        return { success: true, message: "Ride booked successfully." };
+      const newRide = await db.rides.create({
+        data: {
+          passengerId: parseInt(bookingData.passengerId),
+          pickupLocation: bookingData.currentPlaceName,
+          dropLocation: bookingData.destination,
+          distance: bookingData.distance,
+          duration: bookingData.duration,
+          cost: bookingData.cost,
+          vehicleId: parseInt(bookingData.vehicleId),
+        },
+      });
+      return { success: true, bookingId: newRide.id };
     } catch (error) {
-        console.error("Error booking the ride:", error);
-        return { success: false, message: "Failed to book the ride." };
+      console.error("Error booking the ride:", error);
+      return { success: false, error };
     }
-};
-
+  };
 
 // ---------------- Export the modules ------------------
 module.exports = {

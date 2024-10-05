@@ -194,8 +194,12 @@ try {
   const PassengerRoute = require("./routes/PassengerRoutes");
   const PhoneOperatorRoute = require("./routes/PhoneOperatorRoutes");
   const VehicleRoute = require("./routes/VehicleRoutes");
+<<<<<<< HEAD
   const PlatformRoute = require("./routes/PlatformRoutes");
   const ReportsRoute = require("./routes/ReportsRoute");
+=======
+
+>>>>>>> 41b93511c32d60d6fc8515e0ddf011598028f39a
   // -------------------------------------------------------------------
 
   // ------------------- Use the routes in the application --------------------
