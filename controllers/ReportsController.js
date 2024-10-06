@@ -90,7 +90,8 @@ const driverPerformance = async (req, res) => {
     const groupedTrips = await db.rides.groupBy({
       by: ['driverId'],
       where: {
-        status: 'Pending', 
+        status: 'Pending',
+        driverId: { not: null }, 
       },
       _count: {
         id: true,
@@ -111,16 +112,16 @@ const driverPerformance = async (req, res) => {
       })
     );
 
-    const labels = driverPerformanceData.map(dp => dp.driverFullName);
-    const data = driverPerformanceData.map(dp => dp.tripsCompleted);
+    const labels = driverPerformanceData.map((dp) => dp.driverFullName);
+    const data = driverPerformanceData.map((dp) => dp.tripsCompleted);
 
     res.json({
       labels,
       datasets: [
         {
-          label: "Trips Completed",
+          label: 'Trips Completed',
           data,
-          backgroundColor: "rgba(54, 162, 235, 0.5)",
+          backgroundColor: 'rgba(54, 162, 235, 0.5)',
         },
       ],
     });
@@ -128,6 +129,7 @@ const driverPerformance = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
 
 const passengerActivityReport = async (req, res) => {
   try {
