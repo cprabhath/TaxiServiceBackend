@@ -27,14 +27,6 @@ const PORT = process.env.PORT || 3000;
 const DATABASE_URL = process.env.DATABASE_URL;
 // -------------------------------------------------------------------
 
-// ----------------------- Start the server --------------------------
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-}).on("error", (err) => {
-  console.error("Error starting the server: ", err);
-});
-// -------------------------------------------------------------------
-
 // ------------------- Middleware for parsing requests ---------------
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -194,14 +186,18 @@ try {
   const PassengerRoute = require("./routes/PassengerRoutes");
   const PhoneOperatorRoute = require("./routes/PhoneOperatorRoutes");
   const VehicleRoute = require("./routes/VehicleRoutes");
-
+  const PlatformRoute = require("./routes/PlatformRoutes");
+  const ReportsRoute = require("./routes/ReportsRoute");
   // -------------------------------------------------------------------
 
+  // ------------------- Use the routes in the application --------------------
   app.use("/api/v1/admin", AdminRoute);
   app.use("/api/v1/driver", DriverRoute);
   app.use("/api/v1/passenger", PassengerRoute);
   app.use("/api/v1/phone-operator", PhoneOperatorRoute);
   app.use("/api/v1/vehicle", VehicleRoute);
+  app.use("/api/v1/platform", PlatformRoute);
+  app.use("/api/v1/reports", ReportsRoute);
   // --------------------------------------------------------------------
   
 } catch (e) {
@@ -209,4 +205,16 @@ try {
   console.error("Error in routes: ", e.message);
   console.error("==================================================");
 }
+// -------------------------------------------------------------------
+
+// ----------------------- Start the server --------------------------
+app.listen(PORT, () => {
+  console.log("==================================================");
+  console.log(`Server is running on port ${PORT}`);
+  console.log("==================================================");
+}).on("error", (err) => {
+  console.error("=================== ERROR ========================");
+  console.error("Error starting the server: ", err);
+  console.error("==================================================");
+});
 // -------------------------------------------------------------------

@@ -81,8 +81,8 @@ const registerDriver = async (fullName, email, password, username, nic, phone, a
             throw new Error("Driver already exists");
         }
 
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
+// Hash the password
+const hashedPassword = await bcrypt.hash(password, 10);
 
         // Create a new driver document
         await db.drivers.create({
@@ -98,19 +98,19 @@ const registerDriver = async (fullName, email, password, username, nic, phone, a
             }
         });
 
-        // Generate JWT token
-        const token = jwt.sign({ userId: driver.id, email: email }, process.env.SECRET_KEY, {
-            expiresIn: "1h",
-        });
+// Generate JWT token
+const token = jwt.sign({ userId: driver.id, email: email }, process.env.SECRET_KEY, {
+    expiresIn: "1h",
+});
 
-        return ResponseService(res, 200, {
-            token,
-            user: {
-                id: driver._id,
-                email: driver.email,
-                fullName: driver.fullName,
-            },
-        });
+return ResponseService(res, 200, {
+    token,
+    user: {
+        id: driver._id,
+        email: driver.email,
+        fullName: driver.fullName,
+        },
+});
     } catch (err) {
         console.error("Error registering driver: ", err);
     }

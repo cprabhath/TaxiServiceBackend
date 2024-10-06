@@ -1,6 +1,7 @@
 const ResponseService = require("../services/ResponseService");
 const DriverServices = require("../services/DriverServices");
 const bcrypt = require('bcrypt');
+const db = require("../services/db");
 
 
 //----------------------------------Driver Login--------------------------------//
@@ -71,6 +72,20 @@ const updateDriverStatus = async (req, res) => {
 
 // ----------------------------------------------------------------------//
 
+// ----------------------------------- get all drivers ----------------------------//
+const getAllDrivers = async (req, res) => {
+    try {
+        const drivers = await db.drivers.findMany({
+            where: {
+                deletedAt: null
+            }
+        });
+        return ResponseService(res, "Success", 200, drivers);
+    } catch (ex) {
+        console.error("Error fetching drivers: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to fetch drivers");
+    }
+}
 
 
 
@@ -109,7 +124,6 @@ const getRideList = async (req, res) => {
 
 
 // ---------------------------------- Fetch Vehicle details ---------------------------//
-
 const getVehicleDetails = async (req, res) => {
     const { vehicleId } = req.body;
 
@@ -214,6 +228,25 @@ const getTotalVehicleCount = async (req, res) => {
     }
 }
 
+// --------------------------------------- Update driver Profile ----------------------------------------//
+const updateDriverProfile = async (req, res) => {
+    const { driverId, vehiasdasd } = req.body;
+
+    try {
+        const updatedProfile = await db.drivers.update({
+            where: driverId,
+
+            data:{
+                
+            }
+        })
+        return ResponseService(res, "Success", 200, updatedProfile);
+    } catch (ex) {
+        console.error("Error updating driver profile: ", ex);
+        return ResponseService(res, "Error", 500, "Failed to update driver profile");
+    }
+};
+
 // -------------------------------------------------------------------------------------------------//
 
 module.exports = {
@@ -227,5 +260,7 @@ module.exports = {
     getTotalVehicleCount,
     getTotalEarnings,
     updateRideStatus,
-    getVehicleDetails
+    getVehicleDetails,
+    getAllDrivers,
+    updateDriverProfile
 }
