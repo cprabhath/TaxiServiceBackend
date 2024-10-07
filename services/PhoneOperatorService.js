@@ -2,11 +2,11 @@
 const db = require("../services/db");
 
 // ------------------------------ getPhoneOperatorByUsername ---------------------------------//
-const getPhoneOperatorByUsername = async (username) => {
+const getPhoneOperatorByUsername = async (email) => {
   try {
     const user = await db.phoneOperator.findFirst({
       where: {
-        username: username,
+        email: email,
         status: "active",
       },
     });

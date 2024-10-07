@@ -8,11 +8,11 @@ const jwt = require("jsonwebtoken");
 
 // ------------------------------ Login ---------------------------------//
 const Login = async (req, res) => {
-  const { username, password } = req.body;
+  const { email, password } = req.body;
 
   // Checking if the user exists
   const existingUser = await PhoneOperatorService.getPhoneOperatorByUsername(
-    username
+    email
   );
 
   if (!existingUser) {
@@ -30,7 +30,7 @@ const Login = async (req, res) => {
   const token = jwt.sign(
     {
       userId: existingUser.id,
-      username: existingUser.username,
+      email: existingUser.email,
       role: existingUser.role,
     },
     process.env.JWT_SECRET,
@@ -196,7 +196,7 @@ const getAllUsernames = async (req, res) => {
 
 // -------------------------------- Register Passenger --------------------------------//
 const RegisterPassenger = async (req, res) => {
-  const { operatorId ,email, fullName, username, nic, password, phone, address } = req.body;
+  const { operatorId , fullName, username, nic, password, phone, address } = req.body;
 
   // Checking if the user exists
   const existingUser = await PassengerService.getPassengerByUsername(username);
