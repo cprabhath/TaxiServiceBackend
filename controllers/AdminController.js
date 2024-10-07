@@ -5,7 +5,9 @@ const jwt = require("jsonwebtoken");
 const adminServices = require("../services/AdminServices");
 const emailServices = require("../services/EmailService");
 const ResponseService = require("../services/ResponseService");
+const AdminServices = require("../services/AdminServices");
 const db = require("../services/db");
+const bcrypt = require("bcrypt");
 //-----------------------------------------------------------------------//
 
 let emailCount = 0;
@@ -237,13 +239,17 @@ const addPhoneOperator = async (req, res) => {
       return ResponseService(res, "Error", 400, "Operator already exists");
     }
 
+    const OTP = await AdminServices.generateOTP();
+
+    hashedOTP = await bcrypt.hash(OTP, 10);
+
     await db.phoneOperator.create({
       data: {
         email: email,
         fullName: fullName,
         username: email,
         nic: nic,
-        password: "$2y$10$rz01wdO2hLJVNwlyLKETNu/ZSRIT7ljjlpzRwejcYK36O72YKyaqO",
+        password: hashedOTP,
         phone: phone,
         address: address,
       },
@@ -252,7 +258,7 @@ const addPhoneOperator = async (req, res) => {
     const emailSent = await emailServices.sendEmail(res, email, "Password", {
       heading: "One Time Password",
       username: fullName.toUpperCase(),
-      token: "Your username is : " + email + " and password is : 123456",
+      token: "Your username is : " + email + " and password is : " + OTP,
     });
 
     if (emailSent) {
