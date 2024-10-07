@@ -101,7 +101,7 @@ model Drivers {
   phone           String
   address         String
   password        String
-  isEmailVerified Boolean
+  isEmailVerified Boolean?
   profileImage    String    @default("https://firebasestorage.googleapis.com/v0/b/taxiservice-3547e.appspot.com/o/uploads%2F8583437.png?alt=media&token=1ca1802e-a46b-4622-89e1-257e76d71481")
   status          String?   @default("active")
   role            String    @default("driver")

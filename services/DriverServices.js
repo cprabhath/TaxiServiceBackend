@@ -258,7 +258,7 @@ const getTotalEarnings = async (driverId) => {
             },
             where: {
                 driverId: parseInt(driverId),
-                status: "pending",
+                status: "completed",
             }
         });
         const totalEarning = rides.reduce((total, ride) => {

@@ -11,7 +11,7 @@ const router = express.Router();
 router.post("/login", DriverController.DriverLogin);
 router.post("/register", DriverController.DriverRegister);
 router.post("/profile", DriverController.getDriverProfile);
-router.put("/update-profile", DriverController.updateDriverProfile);
+router.put("/update-profile/:driverId", DriverController.updateDriverProfile);
 router.get("/ride-details", DriverController.getRideList);
 router.post("/get-ride-count", DriverController.getTotalRidesCount);
 router.post("/total-earnings", DriverController.getTotalEarnings);

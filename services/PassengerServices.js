@@ -108,8 +108,22 @@ const getTotalPassengerCount = async () => {
 }
 // --------------------------------------------------------------------------------- //
 
+
+const getDriverbyVehicleID = async (vehicleID) => {
+    try{
+        const vehicleDetails = await db.vehicle.findUnique({
+            where: { id: vehicleID },
+        })
+    return vehicleDetails;
+    }catch(err){
+        console.error("Error getting driver by vehicle ID: ", err);
+    }
+}
+
 //---------------------------Book a Ride---------------//
 const bookRide = async (bookingData) => {
+    const vehicle = await getDriverbyVehicleID(parseInt(bookingData.vehicleId))
+
     try {
       const newRide = await db.rides.create({
         data: {
@@ -120,6 +134,7 @@ const bookRide = async (bookingData) => {
           duration: bookingData.duration,
           cost: bookingData.cost,
           vehicleId: parseInt(bookingData.vehicleId),
+          driverId: parseInt(vehicle.driverId)
         },
       });
       return { success: true, bookingId: newRide.id };
