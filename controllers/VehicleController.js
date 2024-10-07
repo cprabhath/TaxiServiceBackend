@@ -121,11 +121,11 @@ const getVehicleByNumber = async (req, res) => {
 
 //--------------------------- get vehicle details using driver id-------------//
 const getVehicleDetailsByDriverId = async (req, res) => {
-    const driverId = req.user.id; // Assuming you have middleware to fetch the logged-in user's details
+    const driverId = req.user.id; 
     try {
       const vehicles = await prisma.vehicle.findMany({
         where: {
-          driverId: driverId, // Assuming you've added driverId to the Vehicle model
+          driverId: driverId, 
         },
       });
       res.json({ data: vehicles });
