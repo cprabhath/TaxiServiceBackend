@@ -71,6 +71,8 @@ model Passenger {
   updatedAt            DateTime       @updatedAt
   deletedAt            DateTime?
   rides                Rides[]
+
+  driverRatings driverRatings[]
 }
 
 model PhoneOperator {
@@ -110,6 +112,8 @@ model Drivers {
   deletedAt       DateTime?
   rides           Rides[]
   vehicles        Vehicle[]
+
+  driverRatings driverRatings[]
 }
 
 model Vehicle {
@@ -148,4 +152,17 @@ model PlatformRates {
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
+}
+
+model driverRatings {
+  id          Int       @id @default(autoincrement())
+  driverId    Int
+  driver      Drivers   @relation(fields: [driverId], references: [id])
+  passengerId Int
+  passenger   Passenger @relation(fields: [passengerId], references: [id])
+  rating      Int
+  comment     String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  deletedAt   DateTime?
 }

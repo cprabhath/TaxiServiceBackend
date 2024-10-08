@@ -188,6 +188,7 @@ try {
   const VehicleRoute = require("./routes/VehicleRoutes");
   const PlatformRoute = require("./routes/PlatformRoutes");
   const ReportsRoute = require("./routes/ReportsRoute");
+  const RideRoute = require("./routes/RatingsRoute");
   // -------------------------------------------------------------------
 
   // ------------------- Use the routes in the application --------------------
@@ -198,6 +199,7 @@ try {
   app.use("/api/v1/vehicle", VehicleRoute);
   app.use("/api/v1/platform", PlatformRoute);
   app.use("/api/v1/reports", ReportsRoute);
+  app.use("/api/v1/ride", RideRoute);
   // --------------------------------------------------------------------
   
 } catch (e) {

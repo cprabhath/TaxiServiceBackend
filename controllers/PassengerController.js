@@ -288,11 +288,15 @@ const getPassengerDetails = async (req, res) => {
 // --------------------------------------- Get ride by passenger id --------------------------------------- //
 const getRideByPassengerId = async (req, res) => {
   try {
-    const { passengerId } = req.body;
+    const passengerId  = req.params.id;
     const rides = await db.rides.findMany({
       where: {
         passengerId: parseInt(passengerId),
       },
+      include:{
+        driver: true,
+        vehicle: true
+      }
     });
     res.json({ data: rides });
   } catch (error) {

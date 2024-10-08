@@ -13,6 +13,7 @@ router.post("/register", PassengerController.PassengerRegister);
 router.post('/book-ride', PassengerController.bookRide);
 router.get('/ride-list', PassengerController.getRideList);
 router.get("/profile/:id", PassengerController.getPassengerDetails);
+router.get("/ride-details/:id", PassengerController.getRideByPassengerId);
 // ------------------------------------------------------ //
 
 // ----------------------- Administrator functions ----------------------- //
