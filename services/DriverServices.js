@@ -259,6 +259,23 @@ const getTotalCount = async (driverId) => {
 //  ------------------------------------------ Get total earnings by id ----------------------------
 const getTotalEarnings = async (driverId) => {
   try {
+    // Fetch pending rides
+    const pendingRides = await db.rides.findMany({
+      select: {
+        cost: true,
+      },
+      where: {
+        driverId: parseInt(driverId),
+        status: "pending",
+      },
+    });
+
+    // Calculate total earnings from pending rides
+    const pendingEarnings = pendingRides.reduce((total, ride) => {
+      const rideCost = parseFloat(ride.cost);
+      return total + (isNaN(rideCost) ? 0 : rideCost);
+    }, 0);
+
     // Fetch completed rides
     const completedRides = await db.rides.findMany({
       select: {
