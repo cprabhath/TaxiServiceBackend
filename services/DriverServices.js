@@ -258,9 +258,9 @@ const getTotalCount = async (driverId) => {
 
 //  ------------------------------------------ Get total earnings by id ----------------------------
 const getTotalEarnings = async (driverId) => {
-<<<<<<< HEAD
   try {
-    const rides = await db.rides.findMany({
+    // Fetch pending rides
+    const pendingRides = await db.rides.findMany({
       select: {
         cost: true,
       },
@@ -269,33 +269,40 @@ const getTotalEarnings = async (driverId) => {
         status: "pending",
       },
     });
-    const totalEarning = rides.reduce((total, ride) => {
+
+    // Calculate total earnings from pending rides
+    const pendingEarnings = pendingRides.reduce((total, ride) => {
       const rideCost = parseFloat(ride.cost);
       return total + (isNaN(rideCost) ? 0 : rideCost);
     }, 0);
-=======
-    try {
-        const rides = await db.rides.findMany({
-            select: {
-                cost: true,
-            },
-            where: {
-                driverId: parseInt(driverId),
-                status: "completed",
-            }
-        });
-        const totalEarning = rides.reduce((total, ride) => {
-            const rideCost = parseFloat(ride.cost);
-            return total + (isNaN(rideCost) ? 0 : rideCost);
-        }, 0);
->>>>>>> 5bbbc783a918400073eb9c534aae758dcbb803e1
 
-    return totalEarning;
+    // Fetch completed rides
+    const completedRides = await db.rides.findMany({
+      select: {
+        cost: true,
+      },
+      where: {
+        driverId: parseInt(driverId),
+        status: "completed",
+      },
+    });
+
+    // Calculate total earnings from completed rides
+    const completedEarnings = completedRides.reduce((total, ride) => {
+      const rideCost = parseFloat(ride.cost);
+      return total + (isNaN(rideCost) ? 0 : rideCost);
+    }, 0);
+
+    // Return total earnings (pending + completed)
+    const totalEarnings = pendingEarnings + completedEarnings;
+    return totalEarnings;
+
   } catch (err) {
     console.error("ERROR " + err.message);
     return null;
   }
 };
+
 // ------------------------------------------------------
 
 // ------------------------------------------- Administrator functions -----------------------------------//
