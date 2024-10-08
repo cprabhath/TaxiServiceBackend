@@ -171,6 +171,7 @@ const getRideList = async () => {
 }
 
 // ------------------------------ Get Passenger Details By ID ----------------------//
+
 const getPassengerDetailsById = async (passengerId) => {
     try {
       const passengerDetails = await db.passenger.findUnique({
