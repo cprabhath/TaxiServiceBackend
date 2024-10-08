@@ -258,6 +258,7 @@ const getTotalCount = async (driverId) => {
 
 //  ------------------------------------------ Get total earnings by id ----------------------------
 const getTotalEarnings = async (driverId) => {
+<<<<<<< HEAD
   try {
     const rides = await db.rides.findMany({
       select: {
@@ -272,6 +273,22 @@ const getTotalEarnings = async (driverId) => {
       const rideCost = parseFloat(ride.cost);
       return total + (isNaN(rideCost) ? 0 : rideCost);
     }, 0);
+=======
+    try {
+        const rides = await db.rides.findMany({
+            select: {
+                cost: true,
+            },
+            where: {
+                driverId: parseInt(driverId),
+                status: "completed",
+            }
+        });
+        const totalEarning = rides.reduce((total, ride) => {
+            const rideCost = parseFloat(ride.cost);
+            return total + (isNaN(rideCost) ? 0 : rideCost);
+        }, 0);
+>>>>>>> 5bbbc783a918400073eb9c534aae758dcbb803e1
 
     return totalEarning;
   } catch (err) {

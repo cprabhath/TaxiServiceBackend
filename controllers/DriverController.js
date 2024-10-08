@@ -190,8 +190,10 @@ const getTotalRidesCount = async (req, res) => {
 // ---------------------------- get total earnings -------------------------//
 
 const getTotalEarnings = async (req, res) => {
+    const { driverId } = req.body
+
     try {
-      const totalEarning = await DriverServices.getTotalEarnings();
+      const totalEarning = await DriverServices.getTotalEarnings(driverId);
   
       return ResponseService(res, "Success", 200, totalEarning);
     } catch (err) {
@@ -230,13 +232,22 @@ const getTotalVehicleCount = async (req, res) => {
 
 // --------------------------------------- Update driver Profile ----------------------------------------//
 const updateDriverProfile = async (req, res) => {
-    const { driverId, vehiasdasd } = req.body;
+    const driverId =  req.params.driverId
+    const { data } = req.body;
 
     try {
         const updatedProfile = await db.drivers.update({
-            where: driverId,
+            where: {
+                id: parseInt(driverId)
+            },
 
             data:{
+                email: data.email,
+                fullName: data.fullName,
+                username: data.username,
+                nic: data.nic,
+                phone: data.phone,
+                address: data.address,
                 
             }
         })
@@ -244,6 +255,7 @@ const updateDriverProfile = async (req, res) => {
     } catch (ex) {
         console.error("Error updating driver profile: ", ex);
         return ResponseService(res, "Error", 500, "Failed to update driver profile");
+        
     }
 };
 

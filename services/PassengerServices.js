@@ -108,9 +108,24 @@ const getTotalPassengerCount = async () => {
 }
 // --------------------------------------------------------------------------------- //
 
+
+const getDriverbyVehicleID = async (vehicleID) => {
+    try{
+        const vehicleDetails = await db.vehicle.findUnique({
+            where: { id: vehicleID },
+        })
+    return vehicleDetails;
+    }catch(err){
+        console.error("Error getting driver by vehicle ID: ", err);
+    }
+}
+
 //---------------------------Book a Ride---------------//
 const bookRide = async (bookingData) => {
+    const vehicle = await getDriverbyVehicleID(parseInt(bookingData.vehicleId))
+
     try {
+        console.log('called here');
       const newRide = await db.rides.create({
         data: {
           passengerId: parseInt(bookingData.passengerId),
@@ -120,6 +135,7 @@ const bookRide = async (bookingData) => {
           duration: bookingData.duration,
           cost: bookingData.cost,
           vehicleId: parseInt(bookingData.vehicleId),
+          driverId: parseInt(vehicle.driverId)
         },
       });
       return { success: true, bookingId: newRide.id };
@@ -129,13 +145,60 @@ const bookRide = async (bookingData) => {
     }
   };
 
+  //----------------------------------------get ride list----------------------------------//
+const getRideList = async () => {
+    try{
+        const list = await db.rides.findMany({
+            include: {
+                passenger: {
+                    select: {
+                        fullName: true,
+                        email: true,
+                    },
+                },
+
+             
+               
+                
+            },
+        });
+        return list;
+
+    } catch (err){
+        console.error("Error fetching rides: ", err);
+        return [];
+    }
+}
+
+// ------------------------------ Get Passenger Details By ID ----------------------//
+const getPassengerDetailsById = async (passengerId) => {
+    try {
+      const passengerDetails = await db.passenger.findUnique({
+        where: {
+          id: passengerId,
+          deletedAt: null
+        }
+      });
+  
+      return passengerDetails;
+    } catch (err) {
+      console.error("Error fetching passenger details: ", err);
+      throw new Error("Failed to fetch passenger details");
+    }
+  };
+  
+  
+
 // ---------------- Export the modules ------------------
 module.exports = {
     getUserByEmail,
     registerPassenger,
     login,
     bookRide,
-    getTotalPassengerCount
+    getTotalPassengerCount,
+    getRideList,
+    getPassengerDetailsById
 };
 
 // ------------------------------------------------------
+

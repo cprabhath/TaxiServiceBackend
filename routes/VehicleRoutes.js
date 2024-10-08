@@ -13,7 +13,7 @@ router.get("/all-vehicles", VehicleController.getAllVehicles);
 router.post("/get-vehicle/:id", VehicleController.getVehicleById);
 router.get("/update-vehicle/:id", VehicleController.updateVehicle);
 router.get("/get-vehicle-details/:vehicleNumber", VehicleController.getVehicleByNumber);
-router.get('/get-vehicles-by-driver', VehicleController.getVehicleDetailsByDriverId);
+router.post('/get-vehicles-by-driver', VehicleController.getVehicleDetailsByDriverId);
 router.put("/delete-vehicle/:id", VehicleController.deleteVehicle);
 router.put("/update-vehicle-status/:id", VehicleController.updateVehicleStatus);
 router.post("/get-all-vehicle-types", VehicleController.getAllVehicleTypes);
