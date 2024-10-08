@@ -266,7 +266,7 @@ const getRideList = async (req, res) => {
       return ResponseService(res, "Error", 500, "Failed to fetch Rides");
   }
 }
-//-------------------------------------------------------------------
+
 // -------------------------------- Get Passenger Details -------------------------------- //
 const getPassengerDetails = async (req, res) => {
   try {
