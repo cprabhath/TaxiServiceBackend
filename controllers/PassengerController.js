@@ -228,7 +228,7 @@ const getPassengerById = async (req, res) => {
 const bookRide = async (req, res) => {
   try {
     const bookingData = req.body;
-
+      console.log('called 1');
     // Call the service to book the ride
     const result = await PassengerServices.bookRide(bookingData);
 
@@ -250,6 +250,37 @@ const bookRide = async (req, res) => {
   }
 };
 
+
+//------------------------get ride list-----------------------------------
+
+const getRideList = async (req, res) => {
+
+  try {
+      const rideList = await PassengerServices.getRideList();
+      return ResponseService(res, "Success", 200, rideList);
+  } catch (ex) {
+      console.error("Error fetching Rides: ", ex);
+      return ResponseService(res, "Error", 500, "Failed to fetch Rides");
+  }
+}
+//-------------------------------------------------------------------
+// -------------------------------- Get Passenger Details -------------------------------- //
+const getPassengerDetails = async (req, res) => {
+  try {
+    const passengerId = req.user.id; // Assuming the user ID is attached to the request
+    const passengerDetails = await PassengerServices.getPassengerDetailsById(passengerId);
+
+    if (!passengerDetails) {
+      return ResponseService(res, "Error", 404, "Passenger not found");
+    }
+
+    return ResponseService(res, "Success", 200, passengerDetails);
+  } catch (err) {
+    console.error("Error fetching passenger details: ", err);
+    return ResponseService(res, "Error", 500, "Failed to fetch passenger details");
+  }
+};
+
 module.exports = {
   PassengerLogin,
   PassengerRegister,
@@ -259,4 +290,6 @@ module.exports = {
   updatePassengerStatus,
   deletePassenger,
   getPassengerById,
+  getRideList,
+  getPassengerDetails, // Add the new function here
 };

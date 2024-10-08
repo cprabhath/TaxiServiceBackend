@@ -111,6 +111,7 @@ const getTotalPassengerCount = async () => {
 //---------------------------Book a Ride---------------//
 const bookRide = async (bookingData) => {
     try {
+        console.log('called here');
       const newRide = await db.rides.create({
         data: {
           passengerId: parseInt(bookingData.passengerId),
@@ -129,13 +130,60 @@ const bookRide = async (bookingData) => {
     }
   };
 
+  //----------------------------------------get ride list----------------------------------//
+const getRideList = async () => {
+    try{
+        const list = await db.rides.findMany({
+            include: {
+                passenger: {
+                    select: {
+                        fullName: true,
+                        email: true,
+                    },
+                },
+
+             
+               
+                
+            },
+        });
+        return list;
+
+    } catch (err){
+        console.error("Error fetching rides: ", err);
+        return [];
+    }
+}
+
+// ------------------------------ Get Passenger Details By ID ----------------------//
+const getPassengerDetailsById = async (passengerId) => {
+    try {
+      const passengerDetails = await db.passenger.findUnique({
+        where: {
+          id: passengerId,
+          deletedAt: null
+        }
+      });
+  
+      return passengerDetails;
+    } catch (err) {
+      console.error("Error fetching passenger details: ", err);
+      throw new Error("Failed to fetch passenger details");
+    }
+  };
+  
+  
+
 // ---------------- Export the modules ------------------
 module.exports = {
     getUserByEmail,
     registerPassenger,
     login,
     bookRide,
-    getTotalPassengerCount
+    getTotalPassengerCount,
+    getRideList,
+    getPassengerDetailsById
 };
 
 // ------------------------------------------------------
+
