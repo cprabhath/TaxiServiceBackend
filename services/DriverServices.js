@@ -294,7 +294,7 @@ const getTotalEarnings = async (driverId) => {
     }, 0);
 
     // Return total earnings (pending + completed)
-    const totalEarnings = pendingEarnings + completedEarnings;
+    const totalEarnings =  completedEarnings;
     return totalEarnings;
 
   } catch (err) {
