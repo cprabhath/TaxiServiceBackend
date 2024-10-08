@@ -213,7 +213,8 @@ const getVehicleDetails = async (req, res) => {
     try {
         const vehicleTypes = await db.vehicle.findMany({
             where: {
-                vehicleType: vehicleType
+                vehicleType: vehicleType,
+                deletedAt: null
             },
             select: {
                 vehicleNumber: true,

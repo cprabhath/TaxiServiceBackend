@@ -270,8 +270,8 @@ const getRideList = async (req, res) => {
 // -------------------------------- Get Passenger Details -------------------------------- //
 const getPassengerDetails = async (req, res) => {
   try {
-    const passengerId = req.user.id; // Assuming the user ID is attached to the request
-    const passengerDetails = await PassengerServices.getPassengerDetailsById(passengerId);
+    const id = req.params.id;
+    const passengerDetails = await PassengerServices.getPassengerDetailsById(id);
 
     if (!passengerDetails) {
       return ResponseService(res, "Error", 404, "Passenger not found");
@@ -284,6 +284,23 @@ const getPassengerDetails = async (req, res) => {
   }
 };
 
+// --------------------------------------- Get ride by passenger id --------------------------------------- //
+const getRideByPassengerId = async (req, res) => {
+  try {
+    const { passengerId } = req.body;
+    const rides = await db.rides.findMany({
+      where: {
+        passengerId: parseInt(passengerId),
+      },
+    });
+    res.json({ data: rides });
+  } catch (error) {
+    console.error("Error fetching rides:", error);
+    res.status(500).json({ message: "Error fetching rides." });
+  }
+};
+// ------------------------------------------------------------------------------------------------------- //
+
 module.exports = {
   PassengerLogin,
   PassengerRegister,
@@ -295,4 +312,5 @@ module.exports = {
   getPassengerById,
   getRideList,
   getPassengerDetails, // Add the new function here
+  getRideByPassengerId,
 };

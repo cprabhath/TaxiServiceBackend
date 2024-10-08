@@ -175,7 +175,7 @@ const getPassengerDetailsById = async (passengerId) => {
     try {
       const passengerDetails = await db.passenger.findUnique({
         where: {
-          id: passengerId,
+          id: parseInt(passengerId),
           deletedAt: null
         }
       });
