@@ -266,7 +266,7 @@ const getTotalEarnings = async (driverId) => {
       },
       where: {
         driverId: parseInt(driverId),
-        status: "pending",
+        status: "completed",
       },
     });
 
