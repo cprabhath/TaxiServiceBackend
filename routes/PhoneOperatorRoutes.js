@@ -18,6 +18,8 @@ router.put("/update-profile/:id", PhoneOperatorController.updatePhoneOperatorPro
 router.put("/delete/:id", PhoneOperatorController.deletePhoneOperator);
 router.get("/get-all", PhoneOperatorController.getAllPhoneOperators);
 router.get("/get-all-usernames", PhoneOperatorController.getAllUsernames);
+router.get("/available-drivers", PhoneOperatorController.viewAvailableDrivers);
+router.get("/available-customers", PhoneOperatorController.viewAvaibleCustomers);
 // ----------------------------------------------------------------------- //
 
 //------------------Export module----------------//

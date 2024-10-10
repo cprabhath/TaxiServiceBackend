@@ -231,6 +231,30 @@ const RegisterPassenger = async (req, res) => {
     "Passenger registered successfully!"
   );
 };
+
+// ------------------------------- View available drivers -------------------------------//
+const viewAvailableDrivers = async (req, res) => {
+  const { operatorId } = req.body;
+
+  const drivers = await db.driver.findMany({
+    where: {
+      operatorId: operatorId,
+      status: "active",
+    },
+  });
+
+  return ResponseService(res, "Success", 200, drivers);
+}
+
+
+// -----------------------------------------------------------------------//
+const viewAvaibleCustomers = async (req, res) => {
+  const { operatorId } = req.body;
+
+  const customers = await db.customer.findMany();
+
+  return ResponseService(res, "Success", 200, customers);
+}
 // ------------------------------ Exporting the functions ------------------------------//
 module.exports = {
   Login,
@@ -242,4 +266,6 @@ module.exports = {
   deletePhoneOperator,
   getAllUsernames,
   RegisterPassenger,
+  viewAvailableDrivers,
+  viewAvaibleCustomers
 };
