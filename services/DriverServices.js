@@ -287,13 +287,14 @@ const getTotalEarnings = async (driverId) => {
       },
     });
 
-    // Calculate total earnings from completed rides
-    const completedEarnings = completedRides.reduce((total, ride) => {
-      const rideCost = parseFloat(ride.cost);
-      return total + (isNaN(rideCost) ? 0 : rideCost);
-    }, 0);
+ // Calculate total earnings from completed rides
+ const completedEarnings = completedRides.reduce((total, ride) => {
+  const rideCostStr = ride.cost.replace(/,/g, ''); // Remove commas
+  const rideCost = parseFloat(rideCostStr); // Convert to float
+  return total + (isNaN(rideCost) ? 0 : rideCost);
+}, 0);
 
-    // Return total earnings (pending + completed)
+    // Return total earnings (completed)
     const totalEarnings =  completedEarnings;
     return totalEarnings;
 
